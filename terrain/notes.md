@@ -1,0 +1,3 @@
+Originally used wave function collapse to generate tiles...
+
+But the results proved hard to control. Weights and rules tried but maps were still too volatile.
