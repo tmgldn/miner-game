@@ -29,7 +29,12 @@ export interface TileMetadata {
 }
 
 export type Grid = TileID[][];
-export type GridOptions = { W: number; H: number; CHUTE_DEPTH: number };
+export type GridOptions = {
+  W: number;
+  H: number;
+  CHUTE_DEPTH: number;
+  SEED: number;
+};
 
 export type SubtileID = ".W" | ".G";
 export type Subgrid = Map<number, SubtileID>[];

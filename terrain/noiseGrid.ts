@@ -2,8 +2,6 @@ import { MersenneTwister } from "./random";
 import type { GridOptions, Grid, TileID } from "./types";
 import FastNoiseLite from "fastnoise-lite";
 
-const seed = 1;
-
 const ORE_LIST: TileID[] = [
   "#",
   "b",
@@ -24,9 +22,9 @@ const ORE_LIST: TileID[] = [
   "D",
 ];
 
-export function createNoiseGrid({ H, W }: GridOptions): Grid {
-  const noise = new FastNoiseLite(seed);
-  const Pseudo = new MersenneTwister(seed);
+export function createNoiseGrid({ H, W, SEED }: GridOptions): Grid {
+  const noise = new FastNoiseLite(SEED);
+  const Pseudo = new MersenneTwister(SEED);
 
   const layerCount = ORE_LIST.length - 4;
   const tilesPerLayer = H / layerCount;

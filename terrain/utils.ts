@@ -30,9 +30,15 @@ const SUBTILES: Record<SubtileID, { colour: string }> = {
   ".G": { colour: "hsl(108, 100%, 10%)" },
 };
 
+const SCALE_FACTOR = 4;
+
 export function generateAndDisplayImage(grid: Grid, subgrid: Subgrid): void {
-  const w = (grid[0].length + 1) * 8;
-  const h = (grid.length + 1) * 8;
+  const tilePx = SCALE_FACTOR + SCALE_FACTOR + SCALE_FACTOR + SCALE_FACTOR;
+  const subtilePx = SCALE_FACTOR;
+  const halfTilePx = SCALE_FACTOR + SCALE_FACTOR;
+
+  const w = (grid[0].length + 1) * tilePx;
+  const h = (grid.length + 1) * tilePx;
   const canvas = createCanvas(w, h);
   const ctx = canvas.getContext("2d");
 
@@ -45,13 +51,33 @@ export function generateAndDisplayImage(grid: Grid, subgrid: Subgrid): void {
       const tile = TILES[tileId];
       if (tileId === "?") {
         ctx.fillStyle = "#666";
-        ctx.fillRect(j * 8 + 4, i * 8 + 4, 8, 8);
-        ctx.fillStyle = "#888";
-        ctx.fillRect(j * 8 + 4, i * 8 + 4, 4, 4);
-        ctx.fillRect(j * 8 + 8, i * 8 + 8, 4, 4);
+        ctx.fillRect(
+          j * tilePx + halfTilePx,
+          i * tilePx + halfTilePx,
+          tilePx,
+          tilePx,
+        );
+        ctx.fillStyle = "#tilePxtilePxtilePx";
+        ctx.fillRect(
+          j * tilePx + halfTilePx,
+          i * tilePx + halfTilePx,
+          halfTilePx,
+          halfTilePx,
+        );
+        ctx.fillRect(
+          j * tilePx + halfTilePx + halfTilePx,
+          i * tilePx + tilePx,
+          halfTilePx,
+          halfTilePx,
+        );
       } else {
         ctx.fillStyle = tile.colour;
-        ctx.fillRect(j * 8 + 4, i * 8 + 4, 8, 8);
+        ctx.fillRect(
+          j * tilePx + halfTilePx,
+          i * tilePx + halfTilePx,
+          tilePx,
+          tilePx,
+        );
       }
     }
   }
@@ -60,7 +86,12 @@ export function generateAndDisplayImage(grid: Grid, subgrid: Subgrid): void {
     for (const [j, subtileId] of subgrid[i].entries()) {
       const subtile = SUBTILES[subtileId];
       ctx.fillStyle = subtile.colour;
-      ctx.fillRect(j * 2 + 4, i * 2 + 4, 2, 2);
+      ctx.fillRect(
+        j * subtilePx + halfTilePx,
+        i * subtilePx + halfTilePx,
+        subtilePx,
+        subtilePx,
+      );
     }
   }
 

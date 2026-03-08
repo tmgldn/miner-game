@@ -1,19 +1,8 @@
-import { createNoiseGrid } from "./noiseGrid";
-import type { GridOptions, Grid, SubtileID, Subgrid } from "./types";
+import type { Grid, SubtileID, Subgrid } from "./types";
 
 const precedence: Record<SubtileID, Record<SubtileID | " " | "*", 0 | 1>> = {
-  ".W": {
-    " ": 1,
-    "*": 0,
-    ".W": 0,
-    ".G": 1,
-  },
-  ".G": {
-    " ": 1,
-    "*": 0,
-    ".W": 0,
-    ".G": 0,
-  },
+  ".W": { " ": 1, "*": 0, ".W": 0, ".G": 1 },
+  ".G": { " ": 1, "*": 0, ".W": 0, ".G": 0 },
 } as const;
 
 const toCheck: Record<SubtileID, [number, number][]> = {
