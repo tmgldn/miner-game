@@ -30,7 +30,7 @@ function increment(
   i: number,
   j: number,
 ): void {
-  const W_ = grid[0].length * 4;
+  const W_ = grid[0].length * 2;
   const canReplaceLookup = precedence[id];
   for (let [di, dj] of toCheck[id]) {
     const subgridRow = prev[i + di];
@@ -47,8 +47,8 @@ function increment(
           break;
         }
       } else {
-        const gI = ~~((i + di) * 0.25001);
-        const p = grid[gI][~~((j + dj) * 0.25001)];
+        const gI = (i + di) >> 1;
+        const p = grid[gI][(j + dj) >> 1];
         const k = p === " " ? " " : "*";
         if (canReplaceLookup[k]) {
           next[i + di].set(j + dj, id);
@@ -57,7 +57,7 @@ function increment(
       }
     }
   }
-  const p = grid[~~(i * 0.25001)][~~(j * 0.25001)];
+  const p = grid[i >> 1][j >> 1];
   if (p) next[i].set(j, id);
 }
 
@@ -84,29 +84,15 @@ export function tick(grid: Grid, subgrid: Subgrid): [Grid, Subgrid] {
     const row = grid[i];
     for (let j = 0; j < row.length; j++) {
       if (row[j] === "W" || row[j] === "w") {
-        for (let k = 0; k < 4; k++) {
-          increment(
-            ".W",
-            grid,
-            subgrid,
-            newSubgrid,
-            i + i + i + i + 3,
-            j + j + j + j + k,
-          );
-          newSubgrid[i + i + i + i + 3].delete(j + j + j + j + k);
+        for (let k = 0; k < 2; k++) {
+          increment(".W", grid, subgrid, newSubgrid, i + i + 1, j + j + k);
+          newSubgrid[i + i + 1].delete(j + j + k);
         }
       }
       if (row[j] === "E" || row[j] === "e") {
-        for (let k = 0; k < 4; k++) {
-          increment(
-            ".G",
-            grid,
-            subgrid,
-            newSubgrid,
-            i + i + i + i,
-            j + j + j + j + k,
-          );
-          newSubgrid[i + i + i + i].delete(j + j + j + j + k);
+        for (let k = 0; k < 2; k++) {
+          increment(".G", grid, subgrid, newSubgrid, i + i, j + j + k);
+          newSubgrid[i + i].delete(j + j + k);
         }
       }
     }
