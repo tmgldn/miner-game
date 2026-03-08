@@ -1,5 +1,5 @@
 import { createNoiseGrid } from "./noiseGrid";
-import type { GridOptions, Grid } from "./types";
+import type { GridOptions, Grid } from "../types";
 
 export function buildGrid(O: GridOptions) {
   const centreIdx = Math.floor(O.W / 2);

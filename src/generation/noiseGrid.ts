@@ -1,5 +1,5 @@
 import { MersenneTwister } from "./random";
-import type { GridOptions, Grid, TileID } from "./types";
+import type { GridOptions, Grid, TileID } from "../types";
 import FastNoiseLite from "fastnoise-lite";
 
 const ORE_LIST: TileID[] = [

@@ -1,7 +1,3 @@
-export type GameState = {
-  fluids: Pixel[];
-};
-
 export type TileID =
   | "|"
   | "-"

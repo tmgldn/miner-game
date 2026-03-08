@@ -1,12 +1,12 @@
 import { buildGrid } from "./grid";
 import { tick } from "./subgrid";
-import type { GridOptions, Subgrid } from "./types";
+import type { GridOptions, Subgrid } from "../types";
 import { generateAndDisplayImage } from "./utils";
 
 const O: GridOptions = {
   SEED: 1,
-  W: 20, // 91, // 31,
-  H: 80, // 400,
+  W: 31,
+  H: 100,
   CHUTE_DEPTH: 5,
 };
 
@@ -24,9 +24,10 @@ for (let i = 0; i < 180; i++) {
   }
 
   generateAndDisplayImage(grid, subgrid);
-  await new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 100);
-  });
+  // await new Promise<void>((resolve) => {
+  //   setTimeout(() => {
+  //     resolve();
+  //   }, 100);
+  // });
+  break;
 }
