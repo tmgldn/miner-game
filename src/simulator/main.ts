@@ -18,9 +18,13 @@ const halfTilePx = SCALE_FACTOR * 2;
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <div id="canvas-container">
+    <canvas id="layer-0" width="${O.W * 4}" height="${O.H * 4}"></canvas>
     <canvas id="layer-1" width="${O.W * 4}" height="${O.H * 4}"></canvas>
   </div>
 `;
+
+const backgroundCanvas = document.querySelector<HTMLCanvasElement>("#layer-0")!;
+const backgroundCtx = backgroundCanvas.getContext("2d")!;
 
 const foregroundCanvas = document.querySelector<HTMLCanvasElement>("#layer-1")!;
 const foregroundCtx = foregroundCanvas.getContext("2d")!;
@@ -30,7 +34,7 @@ const player = {
   y: 20,
   width: 4,
   height: 4,
-  speed: 1,
+  speed: 2,
 };
 
 const keys: { [key: string]: boolean } = Object.create(null);
@@ -77,17 +81,18 @@ function drawGrid(ctx: CanvasRenderingContext2D, grid: Grid) {
 function drawSubgrid(ctx: CanvasRenderingContext2D, subgrid: Subgrid) {
   for (let i = 0; i < subgrid.length; i++) {
     for (const [j, subtileId] of subgrid[i].entries()) {
-      const subtile = SUBTILES[subtileId];
-      ctx.fillStyle = subtile.colour;
-
-      ctx.fillRect(j * subtilePx, i * subtilePx, subtilePx, subtilePx);
+      if (subtileId !== undefined) {
+        const subtile = SUBTILES[subtileId];
+        ctx.fillStyle = subtile.colour;
+        ctx.fillRect(j * subtilePx, i * subtilePx, subtilePx, subtilePx);
+      }
     }
   }
 }
 
 function drawPlayer(ctx: CanvasRenderingContext2D) {
-  ctx.fillStyle = "#f00";
-  ctx.fillRect(player.x, player.y, player.width, player.height);
+  // ctx.fillStyle = "#f00";
+  // ctx.fillRect(player.x, player.y, player.width, player.height);
 
   ctx.fillStyle = "#f006";
   const cx = player.x + halfTilePx;
@@ -102,26 +107,36 @@ function drawPlayer(ctx: CanvasRenderingContext2D) {
   ctx.fillRect(x_ + tilePx, y_, 1, tilePx);
 }
 
+let grid = buildGrid(O);
+let subgrid: Subgrid = new Array(O.H * 2)
+  .fill(0)
+  .map(() => new Array(O.W).fill(undefined));
+
 function update() {
   if (keys["ArrowRight"]) player.x += player.speed;
   if (keys["ArrowLeft"]) player.x -= player.speed;
   if (keys["ArrowUp"]) player.y -= player.speed;
   if (keys["ArrowDown"]) player.y += player.speed;
+  if (keys[" "]) {
+    const i = Math.floor((player.y + halfTilePx) / tilePx);
+    const j = Math.floor((player.x + halfTilePx) / tilePx);
+
+    if (i > 0 && i < grid.length - 1 && j > 0 && j < grid[0].length - 1) {
+      if (grid[i][j] !== "|" && grid[i][j] !== "!") {
+        grid[i][j] = " ";
+      }
+    }
+  }
 
   player.x = Math.max(
     0,
     Math.min(foregroundCanvas.width - player.width, player.x),
   );
-
   player.y = Math.max(
     0,
     Math.min(foregroundCanvas.height - player.height, player.y),
   );
 }
-
-let grid = buildGrid(O);
-let subgrid: Subgrid = new Array().fill(0).map(() => new Map());
-
 function render() {
   foregroundCtx.clearRect(
     0,
@@ -129,11 +144,17 @@ function render() {
     foregroundCanvas.width,
     foregroundCanvas.height,
   );
+  backgroundCtx.clearRect(
+    0,
+    0,
+    backgroundCanvas.width,
+    backgroundCanvas.height,
+  );
 
-  [grid, subgrid] = tick(grid, subgrid);
+  [grid, subgrid] = tick(O, grid, subgrid);
 
   drawGrid(foregroundCtx, grid);
-  drawSubgrid(foregroundCtx, subgrid);
+  drawSubgrid(backgroundCtx, subgrid);
   drawPlayer(foregroundCtx);
 }
 
@@ -141,25 +162,7 @@ function render() {
 function gameLoop() {
   update();
   render();
-  requestAnimationFrame(() => {
-    update();
-    requestAnimationFrame(() => {
-      update();
-      requestAnimationFrame(() => {
-        update();
-        requestAnimationFrame(() => {
-          update();
-          requestAnimationFrame(() => {
-            update();
-            requestAnimationFrame(() => {
-              update();
-              requestAnimationFrame(gameLoop);
-            });
-          });
-        });
-      });
-    });
-  });
+  requestAnimationFrame(gameLoop);
 }
 
 // Start the game loop

@@ -5,7 +5,7 @@ export const TILES: Record<TileID, TileMetadata> = {
   "!": { colour: "rgb(71, 98, 101)" },
   "-": { colour: "hsl(19, 100%, 50%)" },
   "|": { colour: "hsl(300, 100%, 27%)" },
-  " ": { colour: "hsl(0, 0%, 0%)" },
+  " ": { colour: "#0000" /* "hsl(0, 0%, 0%)" */ },
   "#": { colour: "hsl(30, 78%, 18%)" },
   "£": { colour: "hsl(325, 100%, 50%)" },
   "@": { colour: "hsl(30, 2%, 23%)" },

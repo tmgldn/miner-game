@@ -1,19 +1,19 @@
 export type TileID =
-  | "|"
-  | "-"
-  | "?"
-  | "!"
-  | " "
-  | "#"
-  | "£"
-  | "@"
-  | "b"
-  | "s"
+  | "?" // null
+  | " " // empty
+  | "|" // wall
+  | "-" // floor
+  | "!" // lava
+  | "#" // soil
+  | "£" // goal
+  | "@" // boulder
+  | "b" // bronze
+  | "s" // silver
   | "S"
-  | "g"
-  | "w"
-  | "e"
-  | "d"
+  | "g" // gold
+  | "w" // water/sapphire
+  | "e" // gas/emerald
+  | "d" // diamond
   | "G"
   | "W"
   | "E"
@@ -33,4 +33,4 @@ export type GridOptions = {
 };
 
 export type SubtileID = ".W" | ".G";
-export type Subgrid = Map<number, SubtileID>[];
+export type Subgrid = Array<SubtileID | undefined>[];

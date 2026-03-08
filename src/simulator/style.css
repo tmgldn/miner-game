@@ -154,17 +154,16 @@
     background: #888;
   }
   #canvas-container {
-    position: relative;
+    position: absolute;
     aspect-ratio: 31/100;
     height: min(calc(100vh - 11px), calc(318vw - 36px));
     overflow: hidden;
-    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     image-rendering: pixelated;
     box-shadow: 0 0 24px #0007;
-    background: #000;
+    background: #201c11;
   }
   #canvas-container > canvas {
     top: 0;
