@@ -16,7 +16,7 @@ const PARTICLE_CONFIGS: ParticleConfigs = {
   ".G": {
     id: ".G",
     moveDir: -1,
-    canReplace: { ".W": 0, ".G": 0, " ": 1, "*": 0 },
+    canReplace: { ".W": -1, ".G": 0, " ": 1, "*": 0 },
   },
 };
 
@@ -134,7 +134,7 @@ export function tick(
       const d = next[i][j + 1];
 
       if ((a === ".W" && b !== ".W") || (a !== ".W" && b === ".W")) {
-        if (c === ".W" || d === ".W") {
+        if (c === ".W" || (d === ".W" && Math.random() > 0.99)) {
           next[i][j] = ".W";
           next[i][j + 1] = ".W";
         }
@@ -142,7 +142,7 @@ export function tick(
       if ((a === ".G" && b === undefined) || (a === undefined && b === ".G")) {
         if (
           (c === ".G" && d === undefined) ||
-          (c === undefined && d === ".G")
+          (c === undefined && d === ".G" && Math.random() > 0.99)
         ) {
           next[i][j] = ".G";
           next[i][j + 1] = ".G";

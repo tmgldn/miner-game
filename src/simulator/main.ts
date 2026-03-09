@@ -121,8 +121,8 @@ function update() {
     const i = Math.floor((player.y + halfTilePx) / tilePx);
     const j = Math.floor((player.x + halfTilePx) / tilePx);
 
-    if (i > 0 && i < grid.length - 1 && j > 0 && j < grid[0].length - 1) {
-      if (grid[i][j] !== "|" && grid[i][j] !== "!") {
+    if (i >= 0 && i < grid.length - 1 && j > 0 && j < grid[0].length - 1) {
+      if (grid[i][j] !== "|") {
         grid[i][j] = " ";
       }
     }
@@ -136,6 +136,8 @@ function update() {
     0,
     Math.min(foregroundCanvas.height - player.height, player.y),
   );
+
+  [grid, subgrid] = tick(O, grid, subgrid);
 }
 function render() {
   foregroundCtx.clearRect(
@@ -151,16 +153,13 @@ function render() {
     backgroundCanvas.height,
   );
 
-  [grid, subgrid] = tick(O, grid, subgrid);
-
   drawGrid(foregroundCtx, grid);
   drawSubgrid(backgroundCtx, subgrid);
   drawPlayer(foregroundCtx);
 }
-
-// Game loop
+let i = 0;
 function gameLoop() {
-  update();
+  if (++i % 5 === 0) update();
   render();
   requestAnimationFrame(gameLoop);
 }
