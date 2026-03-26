@@ -1,5 +1,5 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1774545151
+::res://::1774555219
 8.png::CompressedTexture2D::1476252654548835057::1774434952::1774435618::1::::<><><>0<>0<>1ee8cbcff6678b8de925aeab30d38604<>res://.godot/imported/8.png-1d78234bf0ddd0d85f35f174472bbdfb.ctex::
 16.1.png::CompressedTexture2D::6986803009297419897::1774442353::1774442414::1::::<><><>0<>0<>a2331f879a69a23ab96dfae67844f6bf<>res://.godot/imported/16.1.png-d03d7e71a6620526235e6b73c937151e.ctex::
 16.2.png::CompressedTexture2D::5935101288974604165::1774456391::1774456398::1::::<><><>0<>0<>e37712951b127a5da1869f790d5f6c7a<>res://.godot/imported/16.2.png-1e206d62102b488cd53be76eccba7d4c.ctex::
@@ -11,11 +11,14 @@
 16.8.png::CompressedTexture2D::2749707957106525704::1774544487::1774544494::1::::<><><>0<>0<>e7c54b58c37eee41d77652ccda65c7d8<>res://.godot/imported/16.8.png-bd5c0d0b444ffe20769329728440a5d9.ctex::
 16.9.png::CompressedTexture2D::3691697051917388264::1774545146::1774545151::1::::<><><>0<>0<>815e99473e1d3ac1971f917150bb6410<>res://.godot/imported/16.9.png-962515d821281d190f7ac2135ee1b164.ctex::
 16.png::CompressedTexture2D::6435325179688248599::1774435614::1774442368::1::::<><><>0<>0<>894502856ad452fef5a867796a67fd66<>res://.godot/imported/16.png-5fe48c84882e17c868ecaf8a8ab18adc.ctex::
-16.tres::TileSet::8289856944652334756::1774537386::0::1::::<><><>0<>0<><>::uid://d1uolbb5cg0gg::::res://16.3.png
-game.tscn::PackedScene::3390746721782975309::1774544525::0::1::::<><><>0<>0<><>::uid://bmysqgc011bv3::::res://subpixel_camera.gd<>uid://dqdwy6avwjcrs::::res://16.tres<>uid://cqtaisjik3q1r::::res://16.2.png<>uid://dxqp88h0q631o::::res://16.4.png<>uid://b8n4gpavluq56::::res://player.gd<>uid://bff8j2j8kcs6s::::res://16.8.png
+16.tres::TileSet::8289856944652334756::1774551759::0::1::::<><><>0<>0<><>::uid://d1uolbb5cg0gg::::res://16.3.png
+Arcade Legacy.ttf::FontFile::577884853205399044::1774552033::1774552033::1::::<><><>0<>0<>998b59f93a045201a2ab80e1c74f7515<>res://.godot/imported/Arcade Legacy.ttf-b55cb2b41813cf073ab8371dc8fdce97.fontdata::
+game_manager.gd::GDScript::7182827089083447234::1774550379::0::1::::<>Node<><>0<>0<><>::
 icon.svg::CompressedTexture2D::5872461939579914946::1774433967::1774433969::1::::<><><>0<>0<>9f90bb7d07f65eaeaf353f6096f8be0e<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
 main.gd::GDScript::5738596274637062125::1774520815::0::1::::<>Node2D<><>0<>0<><>::
-main.tscn::PackedScene::5750346447774947519::1774543843::0::1::::<><><>0<>0<><>::uid://0xjbmrhpkgdk::::res://subpixel.gdshader<>uid://bokrdrg1ihlbh::::res://game.tscn
-player.gd::GDScript::4731261730924505035::1774543324::0::1::::<>CharacterBody2D<><>0<>0<><>::
-subpixel.gdshader::Shader::1802750674903357416::1774537386::0::1::::<><><>0<>0<><>::
+main.tscn::PackedScene::5750346447774947519::1774554796::0::1::::<><><>0<>0<><>::uid://0xjbmrhpkgdk::::res://subpixel.gdshader<>uid://dalod3k4hfm71::::res://game_manager.gd<>uid://dqdwy6avwjcrs::::res://16.tres<>uid://cqtaisjik3q1r::::res://16.2.png<>uid://b8n4gpavluq56::::res://player.gd<>uid://dxqp88h0q631o::::res://16.4.png<>uid://bsujygalwpl1q::::res://16.9.png<>uid://bmysqgc011bv3::::res://subpixel_camera.gd<>uid://ih6xdbo2c77e::::res://Arcade Legacy.ttf<>uid://coqhdbg1e0tco::::res://Overlay.tres
+Pixeled.ttf::FontFile::5676508079469184719::1774555219::1774555219::1::::<><><>0<>0<>7e1e9747049f5940ad43bcb851a73561<>res://.godot/imported/Pixeled.ttf-8b501a73503a6291b7e228c5db1dd496.fontdata::
+player.gd::GDScript::4731261730924505035::1774551370::0::1::::<>CharacterBody2D<><>0<>0<><>::
+Overlay.tres::StyleBoxFlat::5788945661694539494::1774554741::0::1::::<><><>0<>0<><>::
+subpixel.gdshader::Shader::1802750674903357416::1774551759::0::1::::<><><>0<>0<><>::
 subpixel_camera.gd::GDScript::3279353671420562810::1774521408::0::1::::<>Camera2D<><>0<>0<><>::

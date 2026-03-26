@@ -1,5 +1,6 @@
 extends CharacterBody2D
 
+#const JUMP_VELOCITY: float = -300.0
 const JUMP_VELOCITY: float = -170.0
 var is_jumping: bool = false
 var was_on_floor: bool = false
@@ -11,6 +12,8 @@ const FRICTION: float = 20.0
 #if Input.is_action_pressed("ui_accept") and is_on_floor():
 	#velocity.x = 0
 #else:
+
+@onready var game_manager = %GameManager
 
 func _physics_process(delta: float) -> void:	
 	# allows jumping one extra frame after leaving the floor
@@ -25,6 +28,7 @@ func _physics_process(delta: float) -> void:
 	if can_jump and Input.is_action_just_pressed("ui_up"):
 		velocity.y = JUMP_VELOCITY
 		is_jumping = true
+		game_manager.add_points(1)
 
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction < 0:

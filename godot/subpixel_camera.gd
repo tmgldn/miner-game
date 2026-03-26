@@ -8,11 +8,19 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if has_run:
-		actual_cam_pos = actual_cam_pos.lerp(%Player.global_position, delta * 3)
-
-		get_parent().get_parent().get_parent().material.set_shader_parameter(
+		# bound
+		var player_pos = %Player.global_position
+		var desired_pos: Vector2 = Vector2(
+			clamp(player_pos[0], 168.0, 328.0),
+			clamp(player_pos[1], 92.0, 1000.0)
+		)
+		#var desired_pos = player_pos
+		
+		actual_cam_pos = actual_cam_pos.lerp(desired_pos, delta * 3)
+		
+		get_node("/root/Main/SubViewportContainer").material.set_shader_parameter(
 			"cam_offset",
-			(actual_cam_pos.round() - actual_cam_pos)
+			actual_cam_pos.round() - actual_cam_pos
 		)
 
 		global_position = actual_cam_pos.round()

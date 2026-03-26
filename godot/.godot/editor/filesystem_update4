@@ -1,5 +1,9 @@
 res://game.tscn
 res://16.tres
 res://subpixel.gdshader
-res://player.gd
 res://main.tscn
+res://game_manager.gd
+res://subpixel_camera.gd
+res://sub_viewport_container.gd
+res://player.gd
+res://overlays_container.gd
