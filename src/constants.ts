@@ -4,10 +4,9 @@ export const TILES: Record<TileID, TileMetadata> = {
   "?": { colour: "" },
   "!": { colour: "rgb(71, 98, 101)" },
   "-": { colour: "hsl(19, 100%, 50%)" },
-  "|": { colour: "hsl(300, 100%, 27%)" },
+  "|": { colour: "#000" },
   " ": { colour: "#0000" /* "hsl(0, 0%, 0%)" */ },
   "#": { colour: "hsl(30, 78%, 18%)" },
-  "£": { colour: "hsl(325, 100%, 50%)" },
   "@": { colour: "hsl(30, 2%, 23%)" },
   b: { colour: "hsl(30, 100%, 33%)" },
   s: { colour: "hsl(0, 0%, 72%)" },
@@ -23,6 +22,6 @@ export const TILES: Record<TileID, TileMetadata> = {
 };
 
 export const SUBTILES: Record<SubtileID, { colour: string }> = {
-  ".W": { colour: "hsl(189, 100%, 15%)" },
-  ".G": { colour: "hsl(108, 100%, 10%)" },
+  ".W": { colour: "#00414d" },
+  ".G": { colour: "#0a3300" },
 };

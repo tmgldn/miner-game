@@ -1,0 +1,11 @@
+SubViewport
+SubViewportContainer
+Camera2D
+CollisionPolygon2D
+TileMapLayer
+CollisionShape2D
+AnimatedSprite2D
+Sprite2D
+CharacterBody2D
+Node2D
+Label

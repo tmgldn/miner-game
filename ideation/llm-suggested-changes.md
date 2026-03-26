@@ -1,0 +1,26 @@
+# Potentially Interesting Ideas
+
+- Environment-Adaptive Suit
+  - Introduce an expensive "All-Purpose Suit". While its individual stats are lower than dedicated gear (e.g., shorter gas protection duration than a Gas Mask), it provides basic protection against gas, water, and cold, preventing instant death due to a single environmental hazard
+- Slide-Cancel Action
+  - Allow players to force-stop a slide by performing a mining action or placing an item, granting them greater active control over their movement
+- Spark Delay
+  - Implement a short "spark propagation" time (0.5–1 second) for gas and oil ignition, rather than an instant screen-wide explosion. This gives players a brief window to dive into water or take cover behind rock
+- Blast Suit
+  - Introduce a "Blast Suit" that occupies an inventory slot. It can absorb one explosion damage but is destroyed in the process. This gives players a safety net against unforeseen chain reactions
+- If adding Freezing Water:
+  - add an additional time buffer before it starts freezing them
+  - some other workarounds to help eventually power through freezing water
+- If adding monsters:
+  - Monster Fatigue
+    - Monsters enter a "Panting" state after a long chase, slowing their movement speed. This gives the player a chance to gain distance or set a trap
+  - Safe Kill Reward
+    - If the player kills a monster by dropping rocks on it (a non-explosive method), the monster does not explode. This encourages the use of this more skilful kill technique
+  - Health System
+    - Introduce a simple health system (e.g., 3 hearts). Touching a monster deducts 1 heart and grants brief invincibility, whilst falling into magma remains an instant kill. This greatly reduces the frustration of "one mistake and it's over"
+- Grapple Retrieval
+  - Allow players to craft or buy a grappling hook to gather items from a distance, rather than forcing them to walk into the centre of a trap
+- Diversified Scoring
+  - Points should not be limited to ores. Depth reached, survival time, monsters killed, and percentage of map explored should all contribute to the score. Even without finding diamonds, a diligent miner should receive a respectable score
+- Staged Reward Multipliers
+  - For every depth layer passed (e.g., every 50 squares deep), the base score multiplier automatically increases by 0.1x. This encourages deep exploration; even if the player fails to escape, the effort of exploring the depths is reflected in the score value
