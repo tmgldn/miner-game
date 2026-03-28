@@ -13,8 +13,6 @@ const FRICTION: float = 20.0
 	#velocity.x = 0
 #else:
 
-@onready var game_manager = %GameManager
-
 func _physics_process(delta: float) -> void:	
 	# allows jumping one extra frame after leaving the floor
 	# to aid jumping after stepping off a ledge
@@ -28,7 +26,7 @@ func _physics_process(delta: float) -> void:
 	if can_jump and Input.is_action_just_pressed("ui_up"):
 		velocity.y = JUMP_VELOCITY
 		is_jumping = true
-		game_manager.add_points(1)
+		%Game.add_points(1)
 
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if direction < 0:
