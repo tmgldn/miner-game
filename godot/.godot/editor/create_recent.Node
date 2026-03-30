@@ -1,8 +1,8 @@
 Node
+Node2D
 VBoxContainer
 Control
 Container
-Node2D
 Label
 Panel
 PopupPanel

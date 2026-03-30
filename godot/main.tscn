@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://0xjbmrhpkgdk" path="res://subpixel.gdshader" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://bokrdrg1ihlbh" path="res://game.tscn" id="1_ig7tw"]
-[ext_resource type="FontFile" uid="uid://cm40i2c0ylgb4" path="res://Pixeled.ttf" id="9_kek77"]
+[ext_resource type="FontFile" uid="uid://c8utp7l7gla8w" path="res://Tiny5.ttf" id="3_h2yge"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
 shader = ExtResource("1_0xm2m")
@@ -13,11 +13,15 @@ shader = ExtResource("1_0xm2m")
 shader_parameter/cam_offset = Vector2(0, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_eow3j"]
-font = ExtResource("9_kek77")
-font_size = 30
-outline_size = 24
-outline_color = Color(0, 0, 0, 1)
+font = ExtResource("3_h2yge")
+font_size = 90
 shadow_size = 0
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(6, 6)
+stacked_shadow_count = 3
+stacked_shadow_0/offset = Vector2(-6, -6)
+stacked_shadow_1/offset = Vector2(6, -6)
+stacked_shadow_2/offset = Vector2(-6, 6)
 
 [node name="Main" type="Node2D" unique_id=326270260]
 
@@ -70,6 +74,6 @@ grow_horizontal = 0
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_hve3p")
 layout_mode = 2
-text = " 0"
+text = " "
 label_settings = SubResource("LabelSettings_eow3j")
 horizontal_alignment = 2

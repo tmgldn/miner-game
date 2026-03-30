@@ -7,7 +7,7 @@ export type TileID =
   | "#" // soil
   | "£" // goal
   | "@" // boulder
-  | "b" // bronze
+  | "b" // Iron
   | "s" // silver
   | "S"
   | "g" // gold

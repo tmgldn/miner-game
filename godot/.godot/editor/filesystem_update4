@@ -1,7 +1,7 @@
 res://game.tscn
+res://misc.tres
+res://ground.tres
 res://subpixel.gdshader
-res://16.tres
-res://game_manager.gd
-res://main.tscn
+res://globals.gd
+res://game.gd
 res://generate.gd
-res://player.gd
