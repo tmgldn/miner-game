@@ -1,23 +1,42 @@
 extends Node
 
-const ORE_LIST = [
-	G.TileId.Soil,
-	G.TileId.Iron,
-	G.TileId.SilverInRock,
-	G.TileId.Silver,
-	G.TileId.GoldInRock,
-	G.TileId.Sapphire,
-	G.TileId.Gold,
-	G.TileId.SapphireInRock,
-	G.TileId.DiamondInRock,
-	G.TileId.Emerald,
-	G.TileId.EmeraldInRock,
-	G.TileId.DiamondInRock,
-	G.TileId.SapphireInRock,
-	G.TileId.Gold,
-	G.TileId.Diamond,
-	G.TileId.EmeraldInRock,
-	G.TileId.DiamondInRock
+const ORE_SETS: Array[Array] = [
+	[
+		G.TileId.Iron,
+		G.TileId.IronInRock,
+		G.TileId.SilverInRock,
+		G.TileId.Silver,
+	],
+	[
+		G.TileId.SilverInRock,
+		G.TileId.Silver,
+		G.TileId.GoldInRock,
+		G.TileId.Gold,
+	],
+	[
+		G.TileId.GoldInRock,
+		G.TileId.Gold,
+		G.TileId.SapphireInRock,
+		G.TileId.Sapphire,
+	],
+	[
+		G.TileId.SapphireInRock,
+		G.TileId.Sapphire,
+		G.TileId.EmeraldInRock,
+		G.TileId.Emerald,
+	],
+	[
+		G.TileId.EmeraldInRock,
+		G.TileId.Emerald,
+		G.TileId.RubyInRock,
+		G.TileId.Ruby,
+	],
+	[
+		G.TileId.RubyInRock,
+		G.TileId.Ruby,
+		G.TileId.DiamondInRock,
+		G.TileId.Diamond,
+	],
 ]
 
 const W = 31
@@ -39,7 +58,7 @@ func create_noise_grid(SEED: int) -> Array[Array]:
 	var rng = RandomNumberGenerator.new()
 	rng.seed = SEED
 
-	var layerCount = ORE_LIST.size() - 4
+	var layerCount = len(ORE_SETS)
 	var tilesPerLayer = float(H) / float(layerCount)
 
 	var noiseData: Array[Array] = []
@@ -58,17 +77,15 @@ func create_noise_grid(SEED: int) -> Array[Array]:
 
 			if n < -0.22:
 				tile_id = G.TileId.Empty
-			elif n < -0.13 or n > 0.45:
+			elif n < -0.13 or n > 0.4:
 				var rng_val = rng.randf()
-				if rng_val < 0.45:
+				if rng_val < 0.4:
 					var offset = int(floor(i * layerCount / float(H)))
 					var layerStart = offset * tilesPerLayer
 					var exponentModifier = (0.5 * (i - layerStart)) / tilesPerLayer
-					var r = int(floor(pow(rng.randf(), 1.25 - exponentModifier) * 5))
-					tile_id = ORE_LIST[offset + r]
-					if n > 0.45 and (tile_id == G.TileId.Sapphire or tile_id == G.TileId.SapphireInRock):
-						tile_id = G.TileId.EmeraldInRock
-				elif rng_val > 0.7:
+					var r = int(floor(pow(rng.randf(), 1.25 - exponentModifier) * 4))
+					tile_id = ORE_SETS[offset][r]
+				elif rng_val > 0.6:
 					tile_id = G.TileId.Rock
 
 			noiseData[i][j] = tile_id

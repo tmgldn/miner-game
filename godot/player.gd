@@ -29,16 +29,18 @@ func can_mine(tile_coords: Vector2i, player_coords: Vector2i) -> bool:
 	return %Game.is_mineable(tile_coords)
 
 var is_mining: bool = false
+var health = 3
+var is_in_lava: bool = false
 
 const MINING_ACTIONS: Array = [
 	["mine_u", Vector2i(0, -1)],
 	["mine_l", Vector2i(-1, 0)],
 	["mine_r", Vector2i(1, 0)],
 	["mine_d", Vector2i(0, 1)],
-	["mine_ul", Vector2i(-1, -1), Vector2i(-1, 0)],
-	["mine_ur", Vector2i(1, -1), Vector2i(1, 0)],
-	["mine_dl", Vector2i(-1, 1), Vector2i(-1, 0)],
-	["mine_dr", Vector2i(1, 1), Vector2i(1, 0)],
+	["mine_ul", Vector2i(-1, -1)], # Vector2i(-1, 0)],
+	["mine_ur", Vector2i(1, -1)], # Vector2i(1, 0)],
+	["mine_dl", Vector2i(-1, 1)], # Vector2i(-1, 0)],
+	["mine_dr", Vector2i(1, 1)], # Vector2i(1, 0)],
 ]
 
 const MINING_DIRECTIONS = [
@@ -52,8 +54,46 @@ const MINING_DIRECTIONS = [
 	[Vector2i(7, 0), Vector2i(-1, 1)],
 ]
 
-func _physics_process(delta: float) -> void:	
+var is_immune_to_damage: bool = false
+
+func add_damage_if_not_immune(damage: int):
+	if not is_immune_to_damage:
+		health = max(0, health - damage)
+		if health <= 0:
+			print("Dead, RIP")
+			#$"../..".remove_child($"..")
+		else:
+			heal_timeout.cancel = true
+			heal_timeout = { finished = false, cancel = false }
+			start_healing(heal_timeout)
+			is_immune_to_damage = true
+			await get_tree().create_timer(1.0).timeout
+			is_immune_to_damage = false
+
+var heal_timeout = { finished = true, cancel = false }
+func start_healing(timeout_obj):
+	await get_tree().create_timer(5.0).timeout
+	if not timeout_obj.cancel:
+		health += 1
+		if health < 3:
+			heal_timeout = { finished = false, cancel = false }
+			start_healing(heal_timeout)
+
+func _physics_process(delta: float) -> void:
+	if health <= 0:
+		return
+	
 	var can_jump: bool = is_on_floor() or (was_on_floor_recently and not is_jumping)
+	
+	if is_in_lava:
+		add_damage_if_not_immune(1)
+		velocity.y = JUMP_VELOCITY * 1.25
+		is_jumping = true
+		was_on_floor_recently = false
+	
+	if health < 3 and heal_timeout.finished:
+		heal_timeout = { finished = false, cancel = false }
+		start_healing(heal_timeout)
 	
 	if is_on_floor():
 		is_jumping = false
@@ -121,3 +161,12 @@ func _physics_process(delta: float) -> void:
 		velocity.x = lerp(velocity.x, direction * MAX_SPEED, velocity_weight)
 
 	move_and_slide()
+
+
+func _on_lava_body_entered(body: Node2D) -> void:
+	if body == $".":
+		is_in_lava = true
+
+func _on_lava_body_exited(body: Node2D) -> void:
+	if body == $".":
+		is_in_lava = false

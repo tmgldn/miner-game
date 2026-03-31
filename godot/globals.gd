@@ -76,6 +76,27 @@ enum TileId {
 }
 
 
+const INITIAL_TILE_DATA = {
+TileId.Empty: {g = Vector2i(-1, -1), o = Vector2i(-1, -1), to = TileId.Empty, s = 0.15},
+TileId.Boundary: {g = Vector2i(0, 0), o = Vector2i(-1, -1), to = TileId.Boundary, s = 0.15},
+TileId.Soil: {g = Vector2i(0, 1), o = Vector2i(-1, -1), to = TileId.Soil_, s = 0.15},
+TileId.Rock: {g = Vector2i(0, 2), o = Vector2i(-1, -1), to = TileId.Rock_, s = 0.4},
+TileId.Iron: {g = Vector2i(0, 1), o = Vector2i(0, 3), to = TileId.Iron_, s = 0.15},
+TileId.Silver: {g = Vector2i(0, 1), o = Vector2i(0, 4), to = TileId.Silver_, s = 0.15},
+TileId.Gold: {g = Vector2i(0, 1), o = Vector2i(0, 5), to = TileId.Gold_, s = 0.15},
+TileId.Sapphire: {g = Vector2i(0, 1), o = Vector2i(0, 6), to = TileId.Sapphire_, s = 0.15},
+TileId.Emerald: {g = Vector2i(0, 1), o = Vector2i(0, 7), to = TileId.Emerald_, s = 0.15},
+TileId.Ruby: {g = Vector2i(0, 1), o = Vector2i(0, 8), to = TileId.Ruby_, s = 0.15},
+TileId.Diamond: {g = Vector2i(0, 1), o = Vector2i(0, 9), to = TileId.Diamond_, s = 0.15},
+TileId.IronInRock: {g = Vector2i(0, 2), o = Vector2i(0, 11 - 8), to = TileId.IronInRock_, s = 0.4},
+TileId.SilverInRock: {g = Vector2i(0, 2), o = Vector2i(0, 12 - 8), to = TileId.SilverInRock_, s = 0.4},
+TileId.GoldInRock: {g = Vector2i(0, 2), o = Vector2i(0, 13 - 8), to = TileId.GoldInRock_, s = 0.4},
+TileId.SapphireInRock: {g = Vector2i(0, 2), o = Vector2i(0, 14 - 8), to = TileId.SapphireInRock_, s = 0.4},
+TileId.EmeraldInRock: {g = Vector2i(0, 2), o = Vector2i(0, 15 - 8), to = TileId.EmeraldInRock_, s = 0.4},
+TileId.RubyInRock: {g = Vector2i(0, 2), o = Vector2i(0, 16 - 8), to = TileId.RubyInRock_, s = 0.4},
+TileId.DiamondInRock: {g = Vector2i(0, 2), o = Vector2i(0, 17 - 8), to = TileId.DiamondInRock_, s = 0.4},
+}
+
 const TILE_DATA = {
 TileId.Empty: {g = Vector2i(-1, -1), o = Vector2i(-1, -1), to = TileId.Empty, s = 0.15},
 TileId.Boundary: {g = Vector2i(0, 0), o = Vector2i(-1, -1), to = TileId.Boundary, s = 0.15},
@@ -153,3 +174,14 @@ TileId.DiamondInRock__: {g = Vector2i(2, 2), o = Vector2i(0, 17 - 8), to = TileI
 TileId.DiamondInRock___: {g = Vector2i(3, 2), o = Vector2i(0, 17 - 8), to = TileId.Empty, s = 0.2, p = 250},
 TileId.DiamondInRock____: {g = Vector2i(4, 2), o = Vector2i(0, 17 - 8), to = TileId.Empty, s = 0.2, p = 250},
 }
+
+var COORD_LOOKUP: Dictionary[Vector2i, Variant] = {}
+var _needs_init = false
+
+func init():
+	if _needs_init:
+		for tile_id: G.TileId in G.TILE_DATA.keys():
+			var tile_overlay_dict: Dictionary[Vector2i, G.TileId] = {}
+			tile_overlay_dict = COORD_LOOKUP.get_or_add(G.TILE_DATA[tile_id].g, tile_overlay_dict)
+			tile_overlay_dict[G.TILE_DATA[tile_id].o] = tile_id
+		_needs_init = false

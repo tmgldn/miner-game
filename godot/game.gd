@@ -3,43 +3,29 @@ extends Node
 @onready var Ground: TileMapLayer = %Ground
 @onready var GroundOverlay: TileMapLayer = %GroundOverlay
 @onready var score_text: Label = get_node("/root/Main/Overlay/TopRight/ScoreText")
+@onready var timer_text: Label = get_node("/root/Main/Overlay/TopRight/TimeLeftText")
 
-# Nested coord dict used to lookup tiles fast by tile coords
-var COORD_LOOKUP: Dictionary[Vector2i, Variant] = {}
-var score: int = 0
 var grid: Array[Array]
 
 func _ready() -> void:
+	G.init()
 	add_points(0)
-
-	# fill COORD_LOOKUP
-	for tile_id: G.TileId in G.TILE_DATA.keys():
-		var tile_overlay_dict: Dictionary[Vector2i, G.TileId] = {}
-		tile_overlay_dict = COORD_LOOKUP.get_or_add(G.TILE_DATA[tile_id].g, tile_overlay_dict)
-		tile_overlay_dict[G.TILE_DATA[tile_id].o] = tile_id
-
-	grid = $Generate.build_grid(1)
+	grid = $Generate.build_grid(round(Time.get_unix_time_from_system()))
 	$Generate.set_tiles_from_grid(grid)
 
 
 func add_points(points: int) -> void:
-	if score == 0 and points > 0:
+	if score_text.score == 0 and points > 0:
+		timer_text.eruption_time_timestamp = Time.get_unix_time_from_system() + 15
 		%Camera.shake_state = 1
-	score += points
-	var score_str = str((score * 100))
-	var i: int = len(score_str) - 3
-	while i > 0:
-		score_str = (
-			score_str.substr(0, i) + ',' + 
-			score_str.substr(i)
-		)
-		i -= 3
-	score_text.text = '£' + score_str
+	score_text.score += points
+	timer_text.eruption_time_timestamp += (points * 0.1) + (points ** 0.1)
+
 
 func tile_coords_to_id(coords: Vector2i) -> G.TileId:
 	if Ground.get_cell_source_id(coords) == 0:
 		var atlas_coords: Vector2i = Ground.get_cell_atlas_coords(coords)
-		var tile_overlay_dict: Variant = COORD_LOOKUP.get(atlas_coords)
+		var tile_overlay_dict: Variant = G.COORD_LOOKUP.get(atlas_coords)
 		assert(tile_overlay_dict != null)
 		if tile_overlay_dict != null:
 			var tile_id: G.TileId = tile_overlay_dict.get(GroundOverlay.get_cell_atlas_coords(coords) if GroundOverlay.get_cell_source_id(coords) == 0 else Vector2i(-1, -1))
@@ -54,7 +40,7 @@ func atlas_coords_to_id(ground: Vector2i, overlay: Vector2i) -> G.TileId:
 	if ground == Vector2i(-1, -1):
 		return G.TileId.Empty
 	else:
-		var tile_overlay_dict: Variant = COORD_LOOKUP.get(ground)
+		var tile_overlay_dict: Variant = G.COORD_LOOKUP.get(ground)
 		assert(tile_overlay_dict != null)
 		if tile_overlay_dict != null:
 			var tile_id: G.TileId = tile_overlay_dict.get(overlay)

@@ -2,7 +2,11 @@
 
 [ext_resource type="Shader" uid="uid://0xjbmrhpkgdk" path="res://subpixel.gdshader" id="1_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://bokrdrg1ihlbh" path="res://game.tscn" id="1_ig7tw"]
-[ext_resource type="FontFile" uid="uid://c8utp7l7gla8w" path="res://Tiny5.ttf" id="3_h2yge"]
+[ext_resource type="LabelSettings" uid="uid://db7of4nhqu3nf" path="res://score_text.tres" id="3_lquwl"]
+[ext_resource type="Script" uid="uid://c2pw33mnlebok" path="res://time_left_text.gd" id="4_1bvp3"]
+[ext_resource type="LabelSettings" uid="uid://cvai3rnu7ka27" path="res://time_left_header_text.tres" id="4_7mycd"]
+[ext_resource type="Script" uid="uid://cvy5m1cobg8ib" path="res://score_text.gd" id="4_272bh"]
+[ext_resource type="LabelSettings" uid="uid://v6n1ofcxfx4n" path="res://time_left_text.tres" id="4_lquwl"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
 shader = ExtResource("1_0xm2m")
@@ -11,17 +15,6 @@ shader_parameter/cam_offset = Vector2(0, 0)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hve3p"]
 shader = ExtResource("1_0xm2m")
 shader_parameter/cam_offset = Vector2(0, 0)
-
-[sub_resource type="LabelSettings" id="LabelSettings_eow3j"]
-font = ExtResource("3_h2yge")
-font_size = 90
-shadow_size = 0
-shadow_color = Color(0, 0, 0, 1)
-shadow_offset = Vector2(6, 6)
-stacked_shadow_count = 3
-stacked_shadow_0/offset = Vector2(-6, -6)
-stacked_shadow_1/offset = Vector2(6, -6)
-stacked_shadow_2/offset = Vector2(-6, 6)
 
 [node name="Main" type="Node2D" unique_id=326270260]
 
@@ -57,23 +50,56 @@ offset_bottom = 1080.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TopRight" type="VBoxContainer" parent="Overlay" unique_id=1880104241]
-use_parent_material = true
-custom_minimum_size = Vector2(60, 0)
+[node name="Box" type="ColorRect" parent="Overlay" unique_id=392207620]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -60.999695
-offset_top = 2.0
-offset_right = -0.9996948
-offset_bottom = 35.5
+offset_left = -412.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = 312.0
 grow_horizontal = 0
+color = Color(0, 0, 0, 0.54901963)
+
+[node name="TopRight" type="VBoxContainer" parent="Overlay" unique_id=1880104241]
+use_parent_material = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -412.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = 312.0
+grow_horizontal = 0
+theme_override_constants/separation = 0
+alignment = 1
 
 [node name="ScoreText" type="Label" parent="Overlay/TopRight" unique_id=554737377]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_hve3p")
 layout_mode = 2
 text = " "
-label_settings = SubResource("LabelSettings_eow3j")
-horizontal_alignment = 2
+label_settings = ExtResource("3_lquwl")
+horizontal_alignment = 1
+script = ExtResource("4_272bh")
+
+[node name="TimeLeftHeaderText" type="Label" parent="Overlay/TopRight" unique_id=1430798176]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_hve3p")
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+text = " eruption in"
+label_settings = ExtResource("4_7mycd")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TimeLeftText" type="Label" parent="Overlay/TopRight" unique_id=1269484667]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+label_settings = ExtResource("4_lquwl")
+horizontal_alignment = 1
+script = ExtResource("4_1bvp3")
