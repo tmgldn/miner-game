@@ -3,11 +3,5 @@ res://misc.tres
 res://ground.tres
 res://subpixel.gdshader
 res://game.gd
-res://main.tscn
-res://time_left_text.gd
-res://subpixel_camera.gd
-res://lava.gd
-res://player.gd
-res://hearts.gd
 res://generate.gd
-res://globals.gd
+res://tile_info.gd

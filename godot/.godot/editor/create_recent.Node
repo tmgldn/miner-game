@@ -1,3 +1,4 @@
+Node
 Node2D
 Sprite2D
 Area2D
@@ -5,7 +6,6 @@ CollisionShape2D
 ColorRect
 Label
 Control
-Node
 VBoxContainer
 Container
 Panel

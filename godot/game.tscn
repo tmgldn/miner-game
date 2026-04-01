@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dalod3k4hfm71" path="res://game.gd" id="1_eow3j"]
 [ext_resource type="Script" uid="uid://bmysqgc011bv3" path="res://subpixel_camera.gd" id="1_fc0e3"]
 [ext_resource type="Script" uid="uid://dgo7tgw8tphdp" path="res://generate.gd" id="2_j5wjh"]
+[ext_resource type="Script" uid="uid://vin88n50ijwo" path="res://tile_info.gd" id="3_mfdv2"]
 [ext_resource type="TileSet" uid="uid://bg00fejmwmvrc" path="res://misc.tres" id="3_ryrav"]
 [ext_resource type="Script" uid="uid://b8n4gpavluq56" path="res://player.gd" id="4_eow3j"]
 [ext_resource type="TileSet" uid="uid://cqj26tm2yecdo" path="res://ground.tres" id="4_j5wjh"]
@@ -115,6 +116,10 @@ script = ExtResource("1_eow3j")
 
 [node name="Generate" type="Node" parent="Game" unique_id=106760682]
 script = ExtResource("2_j5wjh")
+
+[node name="TileInfo" type="Node" parent="Game/Generate" unique_id=157077908]
+unique_name_in_owner = true
+script = ExtResource("3_mfdv2")
 
 [node name="Layers" type="Node2D" parent="." unique_id=578532158]
 

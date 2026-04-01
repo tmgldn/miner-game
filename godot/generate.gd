@@ -1,41 +1,43 @@
 extends Node
 
+@onready var TileInfo: Node = %TileInfo
+
 const ORE_SETS: Array[Array] = [
 	[
-		G.TileId.Iron,
-		G.TileId.IronInRock,
-		G.TileId.SilverInRock,
-		G.TileId.Silver,
+		'Soil0Iron',
+		'Rock0Iron',
+		'Rock0Silver',
+		'Soil0Silver',
 	],
 	[
-		G.TileId.SilverInRock,
-		G.TileId.Silver,
-		G.TileId.GoldInRock,
-		G.TileId.Gold,
+		'Rock0Silver',
+		'Soil0Silver',
+		'Rock0Gold',
+		'Soil0Gold',
 	],
 	[
-		G.TileId.GoldInRock,
-		G.TileId.Gold,
-		G.TileId.SapphireInRock,
-		G.TileId.Sapphire,
+		'Rock0Gold',
+		'Soil0Gold',
+		'Rock0Sapphire',
+		'Soil0Sapphire',
 	],
 	[
-		G.TileId.SapphireInRock,
-		G.TileId.Sapphire,
-		G.TileId.EmeraldInRock,
-		G.TileId.Emerald,
+		'Rock0Sapphire',
+		'Soil0Sapphire',
+		'Rock0Emerald',
+		'Soil0Emerald',
 	],
 	[
-		G.TileId.EmeraldInRock,
-		G.TileId.Emerald,
-		G.TileId.RubyInRock,
-		G.TileId.Ruby,
+		'Rock0Emerald',
+		'Soil0Emerald',
+		'Rock0Ruby',
+		'Soil0Ruby',
 	],
 	[
-		G.TileId.RubyInRock,
-		G.TileId.Ruby,
-		G.TileId.DiamondInRock,
-		G.TileId.Diamond,
+		'Rock0Ruby',
+		'Soil0Ruby',
+		'Rock0Diamond',
+		'Soil0Diamond',
 	],
 ]
 
@@ -44,7 +46,7 @@ const H = 200
 const CHUTE_DEPTH = 4
 
 ## Creates a noise‑based grid of tile IDs.
-func create_noise_grid(SEED: int) -> Array[Array]:
+func create_noise_grid(SEED: int) -> void:
 	var noise = FastNoiseLite.new()
 	noise.seed = SEED
 	noise.noise_type = FastNoiseLite.NoiseType.TYPE_SIMPLEX_SMOOTH
@@ -73,10 +75,10 @@ func create_noise_grid(SEED: int) -> Array[Array]:
 				noise.get_noise_2d(x3 + 1, j) +
 				noise.get_noise_2d(x3 + 2, j)
 			) / 3.0
-			var tile_id: G.TileId = G.TileId.Soil
+			var tile_id: String = 'Soil0'
 
 			if n < -0.22:
-				tile_id = G.TileId.Empty
+				tile_id = 'Empty'
 			elif n < -0.13 or n > 0.4:
 				var rng_val = rng.randf()
 				if rng_val < 0.4:
@@ -86,18 +88,29 @@ func create_noise_grid(SEED: int) -> Array[Array]:
 					var r = int(floor(pow(rng.randf(), 1.25 - exponentModifier) * 4))
 					tile_id = ORE_SETS[offset][r]
 				elif rng_val > 0.6:
-					tile_id = G.TileId.Rock
+					tile_id = 'Rock0'
 
-			noiseData[i][j] = tile_id
+			set_cell_from_str(i, j, tile_id)
 
-	return noiseData
-
+func set_cell_from_str(i: int, j: int, tile_str: String) -> void:
+	var data = TileInfo.TILE_NAME_LOOKUP[tile_str]
+	var ground_coords: Vector2i = data.g.c[(i + j) % len(data.g.c)]
+	if ground_coords == Vector2i(-1, -1):
+		%Ground.set_cell(Vector2i(j, i), -1)
+	else:
+		%Ground.set_cell(Vector2i(j, i), 0, ground_coords)
+	var overlay_coords: Vector2i = data.o.c[abs(i - j) % len(data.o.c)]
+	if overlay_coords == Vector2i(-1, -1):
+		%GroundOverlay.set_cell(Vector2i(j, i), -1)
+	else:
+		%GroundOverlay.set_cell(Vector2i(j, i), 0, overlay_coords)
 
 ## Builds the complete grid including the chute, cone, walls and bottom.
-func build_grid(SEED: int) -> Array[Array]:
+func initialise_grid(SEED: int) -> void:
 	var centreIdx = W / 2 # integer division (floor)
 	var wallEndIdx = 0
-	var grid = create_noise_grid(SEED)
+	
+	create_noise_grid(SEED)
 
 	# -------- cone (top) --------
 	var max_i = W / 4 # integer division
@@ -107,101 +120,75 @@ func build_grid(SEED: int) -> Array[Array]:
 		for j in W:
 			if abs(j - centreIdx) >= outer:
 				if abs(j - centreIdx) >= inner:
-					grid[i][j] = G.TileId.Empty
+					set_cell_from_str(i, j, 'Empty')
 				else:
-					grid[i][j] = G.TileId.Boundary
+					set_cell_from_str(i, j, 'Boundary')
 					wallEndIdx = i
 
 	# -------- chute --------
-	grid[0][centreIdx] = G.TileId.Empty
+	set_cell_from_str(0, centreIdx, 'Empty')
 	for i in range(1, CHUTE_DEPTH + 4):
-		grid[i][centreIdx - 2] = G.TileId.Soil
-		grid[i][centreIdx - 1] = G.TileId.Soil
-		grid[i][centreIdx] = G.TileId.Empty
-		grid[i][centreIdx + 1] = G.TileId.Soil
-		grid[i][centreIdx + 2] = G.TileId.Soil
+		set_cell_from_str(i, centreIdx - 2, 'Soil0')
+		set_cell_from_str(i, centreIdx - 1, 'Soil0')
+		set_cell_from_str(i, centreIdx, 'Empty')
+		set_cell_from_str(i, centreIdx + 1, 'Soil0')
+		set_cell_from_str(i, centreIdx + 2, 'Soil0')
 		if i > 1:
-			grid[i][centreIdx - 4] = G.TileId.Iron if SEED % 2 else G.TileId.IronInRock
-			grid[i][centreIdx - 3] = G.TileId.Soil
-			grid[i][centreIdx + 3] = G.TileId.Soil
-			grid[i][centreIdx + 4] = G.TileId.IronInRock if SEED % 2 else G.TileId.Iron
+			set_cell_from_str(i, centreIdx - 4, 'Soil0Iron' if SEED % 2 else 'Rock0Iron')
+			set_cell_from_str(i, centreIdx - 3, 'Soil0')
+			set_cell_from_str(i, centreIdx + 3, 'Soil0')
+			set_cell_from_str(i, centreIdx + 4, 'Rock0Iron' if SEED % 2 else 'Soil0Iron')
 		if i > 2:
-			grid[i][centreIdx - 5] = G.TileId.Soil
-			grid[i][centreIdx + 5] = G.TileId.Soil
+			set_cell_from_str(i, centreIdx - 5, 'Soil0')
+			set_cell_from_str(i, centreIdx + 5, 'Soil0')
 	
 	# fixed layout at base of chute - bear easter egg :)
-	grid[CHUTE_DEPTH - 1][centreIdx - 2] = G.TileId.Boundary
-	grid[CHUTE_DEPTH - 1][centreIdx + 2] = G.TileId.Boundary
+	set_cell_from_str(CHUTE_DEPTH - 1, centreIdx - 2, 'Boundary')
+	set_cell_from_str(CHUTE_DEPTH - 1, centreIdx + 2, 'Boundary')
 	
-	grid[CHUTE_DEPTH][centreIdx - 1] = G.TileId.Empty
-	grid[CHUTE_DEPTH][centreIdx] = G.TileId.Boundary
-	grid[CHUTE_DEPTH][centreIdx + 1] = G.TileId.Empty
+	set_cell_from_str(CHUTE_DEPTH, centreIdx - 1, 'Empty')
+	set_cell_from_str(CHUTE_DEPTH, centreIdx, 'Boundary')
+	set_cell_from_str(CHUTE_DEPTH, centreIdx + 1, 'Empty')
 	
-	grid[CHUTE_DEPTH + 1][centreIdx - 3] = G.TileId.Iron if SEED % 2 else G.TileId.IronInRock
-	grid[CHUTE_DEPTH + 1][centreIdx - 2] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 1][centreIdx - 1] = G.TileId.Empty
-	grid[CHUTE_DEPTH + 1][centreIdx] = G.TileId.Empty
-	grid[CHUTE_DEPTH + 1][centreIdx + 1] = G.TileId.Empty
-	grid[CHUTE_DEPTH + 1][centreIdx + 2] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 1][centreIdx + 3] = G.TileId.IronInRock if SEED % 2 else G.TileId.Iron
+	set_cell_from_str(CHUTE_DEPTH + 1, centreIdx - 3, 'Soil0Iron' if SEED % 2 else 'Rock0Iron')
+	set_cell_from_str(CHUTE_DEPTH + 1, centreIdx - 2, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 1, centreIdx - 1, 'Empty')
+	set_cell_from_str(CHUTE_DEPTH + 1, centreIdx, 'Empty')
+	set_cell_from_str(CHUTE_DEPTH + 1, centreIdx + 1, 'Empty')
+	set_cell_from_str(CHUTE_DEPTH + 1, centreIdx + 2, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 1, centreIdx + 3, 'Rock0Iron' if SEED % 2 else 'Soil0Iron')
 	
-	grid[CHUTE_DEPTH + 2][centreIdx - 5] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 2][centreIdx - 4] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 2][centreIdx - 3] = G.TileId.Iron
-	grid[CHUTE_DEPTH + 2][centreIdx - 2] = G.TileId.Iron
-	grid[CHUTE_DEPTH + 2][centreIdx - 1] = G.TileId.Iron
-	grid[CHUTE_DEPTH + 2][centreIdx] = G.TileId.Iron
-	grid[CHUTE_DEPTH + 2][centreIdx + 1] = G.TileId.Iron
-	grid[CHUTE_DEPTH + 2][centreIdx + 2] = G.TileId.Iron
-	grid[CHUTE_DEPTH + 2][centreIdx + 3] = G.TileId.Iron
-	grid[CHUTE_DEPTH + 2][centreIdx + 4] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 2][centreIdx + 5] = G.TileId.Soil
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx - 5, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx - 4, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx - 3, 'Soil0Iron')
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx - 2, 'Soil0Iron')
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx - 1, 'Soil0Iron')
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx, 'Soil0Iron')
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx + 1, 'Soil0Iron')
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx + 2, 'Soil0Iron')
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx + 3, 'Soil0Iron')
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx + 4, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 2, centreIdx + 5, 'Soil0')
 	
-	grid[CHUTE_DEPTH + 3][centreIdx - 5] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 3][centreIdx - 4] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 3][centreIdx - 3] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 3][centreIdx - 2] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 3][centreIdx - 1] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 3][centreIdx] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 3][centreIdx + 1] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 3][centreIdx + 2] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 3][centreIdx + 3] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 3][centreIdx + 4] = G.TileId.Soil
-	grid[CHUTE_DEPTH + 3][centreIdx + 5] = G.TileId.Soil
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx - 5, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx - 4, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx - 3, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx - 2, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx - 1, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx + 1, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx + 2, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx + 3, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx + 4, 'Soil0')
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx + 5, 'Soil0')
 	
-	grid[CHUTE_DEPTH + 3][centreIdx] = G.TileId.Soil
+	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx, 'Soil0')
 
 	# -------- side walls --------
 	for i in range(wallEndIdx, H):
-		grid[i][0] = G.TileId.Boundary
-		grid[i][W - 1] = G.TileId.Boundary
+		set_cell_from_str(i, 0, 'Boundary')
+		set_cell_from_str(i, W - 1, 'Boundary')
 
 	# -------- bottom wall --------
 	for i in W:
-		grid[H - 1][i] = G.TileId.Boundary
-
-	return grid
-
-
-func set_tiles_from_grid(grid):
-	for i in H:
-		var row: Array = grid[i]
-		for j in W:
-			var cell: G.TileId = row[j]
-			var dict: Dictionary = G.TILE_DATA[cell]
-			if dict.g == Vector2i(-1, -1):
-				%Ground.set_cell(Vector2i(j, i), -1)
-			else:
-				%Ground.set_cell(
-					Vector2i(j, i),
-					0,
-					dict.g
-				)
-			if dict.o == Vector2i(-1, -1):
-				%GroundOverlay.set_cell(Vector2i(j, i), -1)
-			else:
-				%GroundOverlay.set_cell(
-					Vector2i(j, i),
-					0,
-					dict.o
-				)
+		set_cell_from_str(H - 1, i, 'Boundary')
