@@ -79,8 +79,10 @@ func start_healing(timeout_obj):
 			heal_timeout = { finished = false, cancel = false }
 			start_healing(heal_timeout)
 
+var has_escaped: bool = false
+
 func _physics_process(delta: float) -> void:
-	if health <= 0:
+	if has_escaped or health <= 0:
 		return
 	
 	var can_jump: bool = is_on_floor() or (was_on_floor_recently and not is_jumping)
@@ -170,3 +172,9 @@ func _on_lava_body_entered(body: Node2D) -> void:
 func _on_lava_body_exited(body: Node2D) -> void:
 	if body == $".":
 		is_in_lava = false
+
+func _on_escape_rope_body_entered(body: Node2D) -> void:
+	if not is_inf(%Lava.eruption_timestamp):
+		has_escaped = true
+		global_position = Vector2(248, -25)
+		print('Escape! woo')

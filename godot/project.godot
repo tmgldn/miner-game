@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Reopen the Mines"
+config/name="Bearcano"
 run/main_scene="uid://cn6rmo6yghaol"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 run/max_fps=90

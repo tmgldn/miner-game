@@ -55,10 +55,10 @@ func wait_and_drop_if_still_there(i: int, j: int, was: String):
 	var below_tile_name = below.gi.name
 	
 	if above_tile_name == was and below_tile_name == 'Empty':
-		var next_ground_name: String = above.gi.data.t
+		var next_ground_name: String = above_tile_name.substr(0, len(above_tile_name) - 1) + 'F'
 		var next_coord_pairs = TileInfo.TILE_NAME_LOOKUP[next_ground_name].g.c
 		var next_coord = next_coord_pairs[min(len(next_coord_pairs) - 1, above.gi.index)]
-		Ground.set_cell(below_coords, 0, next_coord)
+		Ground.set_cell(above_coords, 0, next_coord)
 
 		while true:
 			await get_tree().create_timer(1.0).timeout
@@ -78,12 +78,12 @@ func wait_and_drop_if_still_there(i: int, j: int, was: String):
 				
 				var player_coords: Vector2i = %Ground.local_to_map(%Player.global_position)
 				if player_coords.x != i or player_coords.y < j or player_coords.y > new_j:
-					next_ground_name = next_ground_name.substr(0, len(next_ground_name) - 1) + 'F'
-					next_coord_pairs = TileInfo.TILE_NAME_LOOKUP[next_ground_name].g.c
-					next_coord = next_coord_pairs[min(len(next_coord_pairs) - 1, above.gi.index)]
+					var dropped_ground_name = above_tile_name.substr(0, len(above_tile_name) - 1) + '1'
+					var dropped_coord_pairs = TileInfo.TILE_NAME_LOOKUP[dropped_ground_name].g.c
+					var dropped_coord = dropped_coord_pairs[min(len(dropped_coord_pairs) - 1, above.gi.index)]
 					
 					Ground.set_cell(above_coords, -1)
-					Ground.set_cell(Vector2i(i, new_j), 0, next_coord)
+					Ground.set_cell(Vector2i(i, new_j), 0, dropped_coord)
 					
 					if GroundOverlay.get_cell_source_id(above_coords) == 0:
 						GroundOverlay.set_cell(Vector2i(i, new_j), 0, GroundOverlay.get_cell_atlas_coords(above_coords))
