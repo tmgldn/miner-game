@@ -11,6 +11,7 @@ var shake_state: int = 0
 var time_since_last_state: float = 0.0
 
 @onready var C = get_node("/root/Main/SubViewportContainer")
+@onready var Meta = get_node("/root/Main/Meta")
 
 var prev_cam_offset = Vector2(0, 0)
 var has_erupted: bool = false
@@ -18,7 +19,7 @@ var has_erupted: bool = false
 func _process(delta: float) -> void:
 	if has_initialised:
 		if not has_erupted:
-			has_erupted = not is_inf(%Lava.eruption_timestamp)
+			has_erupted = not is_inf(Meta.game_state.erupted_time_timestamp)
 			if has_erupted:
 				lerp_rate = 0.0
 		if lerp_rate < 3:

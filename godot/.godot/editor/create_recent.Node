@@ -1,3 +1,7 @@
+Label
+Control
+Button
+VBoxContainer
 AnimatedSprite2D
 Sprite2D
 CollisionShape2D
@@ -5,11 +9,6 @@ Area2D
 Node
 Node2D
 ColorRect
-Label
-Control
-VBoxContainer
 Container
 Panel
 PopupPanel
-SubViewport
-SubViewportContainer

@@ -4,8 +4,7 @@ extends Node
 @onready var GroundOverlay: TileMapLayer = %GroundOverlay
 @onready var TileInfo: Node = %TileInfo
 @onready var Generate: Node = $Generate
-@onready var score_text: Label = get_node("/root/Main/Overlay/TopRight/ScoreText")
-@onready var timer_text: Label = get_node("/root/Main/Overlay/TopRight/TimeLeftText")
+@onready var Meta: Node = get_node("/root/Main/Meta")
 
 func _ready() -> void:
 	add_points(0)
@@ -15,13 +14,15 @@ func tile_coords_to_data(coords: Vector2i) -> Dictionary:
 	var ground: Vector2i = Ground.get_cell_atlas_coords(coords) if Ground.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
 	var overlay: Vector2i = GroundOverlay.get_cell_atlas_coords(coords) if GroundOverlay.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
 	return TileInfo.atlas_coords_to_data(ground, overlay)
+	
+const SECONDS_PER_ORE = 2.0
 
 func add_points(points: int) -> void:
-	if score_text.score == 0 and points > 0:
-		timer_text.eruption_time_timestamp = Time.get_unix_time_from_system() + 15
+	if Meta.game_state.score == 0 and points > 0:
+		Meta.game_state.eruption_time_timestamp = Time.get_unix_time_from_system() + 15 - SECONDS_PER_ORE
 		%Camera.shake_state = 1
-	score_text.score += points
-	timer_text.eruption_time_timestamp += (points * 0.1) + (points ** 0.1)
+	Meta.game_state.score += points
+	Meta.game_state.eruption_time_timestamp += SECONDS_PER_ORE if points > 0 else 0
 
 func mine(coords: Vector2i) -> void:
 	var tile_data = tile_coords_to_data(coords)

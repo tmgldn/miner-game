@@ -11,6 +11,8 @@ const FRICTION: float = 20.0
 
 var timer_id = 0
 
+@onready var Meta = get_node("/root/Main/Meta")
+
 func set_disable_jump_after_delay():
 	var new_timer_id = ++self.timer_id
 	await get_tree().create_timer(0.1).timeout
@@ -60,8 +62,7 @@ func add_damage_if_not_immune(damage: int):
 	if not is_immune_to_damage:
 		health = max(0, health - damage)
 		if health <= 0:
-			print("Dead, RIP")
-			#$"../..".remove_child($"..")
+			Meta.die()
 		else:
 			heal_timeout.cancel = true
 			heal_timeout = { finished = false, cancel = false }
@@ -143,7 +144,7 @@ func _physics_process(delta: float) -> void:
 		velocity.x = 0.0
 		velocity.y = 0.0
 	else:
-		if can_jump and Input.is_action_just_pressed("up") and not Input.is_action_pressed('mine_mode'):
+		if can_jump and Input.is_action_just_pressed("up"):
 			velocity.y = JUMP_VELOCITY
 			is_jumping = true
 			was_on_floor_recently = false
@@ -174,7 +175,7 @@ func _on_lava_body_exited(body: Node2D) -> void:
 		is_in_lava = false
 
 func _on_escape_rope_body_entered(body: Node2D) -> void:
-	if not is_inf(%Lava.eruption_timestamp):
+	if not is_inf(Meta.game_state.erupted_time_timestamp):
 		has_escaped = true
 		global_position = Vector2(248, -25)
-		print('Escape! woo')
+		Meta.escape()

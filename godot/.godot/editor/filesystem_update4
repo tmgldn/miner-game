@@ -2,4 +2,14 @@ res://game.tscn
 res://misc.tres
 res://ground.tres
 res://subpixel.gdshader
+res://main.tscn
+res://start_text.gd
+res://menu.gd
+res://meta.gd
+res://time_left_text.gd
+res://score_text.gd
+res://lava.gd
+res://game.gd
 res://player.gd
+res://escape_rope.gd
+res://subpixel_camera.gd

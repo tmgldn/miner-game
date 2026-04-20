@@ -1,9 +1,7 @@
 extends Label
 
-var score: int = 0
-
 func _process(delta: float) -> void:
-	var score_str = str((score * 100))
+	var score_str = str((%Meta.game_state.score * 100))
 	var i: int = len(score_str) - 3
 	while i > 0:
 		score_str = (
