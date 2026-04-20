@@ -1,0 +1,10 @@
+- more consequence
+- what's the point
+- multiple levels by way of actually escaping
+- why escape
+  - to feel better about the bear?
+- controls issues
+- needs story ?
+- should show you how much extra time each ore gives you
+- needs tutorial
+- Bearcano weird name I suppose

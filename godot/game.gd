@@ -15,7 +15,7 @@ func tile_coords_to_data(coords: Vector2i) -> Dictionary:
 	var overlay: Vector2i = GroundOverlay.get_cell_atlas_coords(coords) if GroundOverlay.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
 	return TileInfo.atlas_coords_to_data(ground, overlay)
 	
-const SECONDS_PER_ORE = 2.0
+const SECONDS_PER_ORE = 3.0
 
 func add_points(points: int) -> void:
 	if Meta.game_state.score == 0 and points > 0:
