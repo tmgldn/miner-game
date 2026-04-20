@@ -8,3 +8,4 @@
 - should show you how much extra time each ore gives you
 - needs tutorial
 - Bearcano weird name I suppose
+- bug when restarting game
