@@ -96,14 +96,15 @@ func set_cell_from_str(i: int, j: int, tile_str: String) -> void:
 	var data = TileInfo.TILE_NAME_LOOKUP[tile_str]
 	var ground_coords: Vector2i = data.g.c[(i + j) % len(data.g.c)]
 	if ground_coords == Vector2i(-1, -1):
-		%Ground.set_cell(Vector2i(j, i), -1)
+		%GroundLayer.set_cell(Vector2i(j, i), -1)
 	else:
-		%Ground.set_cell(Vector2i(j, i), 0, ground_coords)
+		%GroundLayer.set_cell(Vector2i(j, i), 0, ground_coords)
 	var overlay_coords: Vector2i = data.o.c[abs(i - j) % len(data.o.c)]
 	if overlay_coords == Vector2i(-1, -1):
-		%GroundOverlay.set_cell(Vector2i(j, i), -1)
+		
+		%GroundOverlayLayer.set_cell(Vector2i(j, i), -1)
 	else:
-		%GroundOverlay.set_cell(Vector2i(j, i), 0, overlay_coords)
+		%GroundOverlayLayer.set_cell(Vector2i(j, i), 0, overlay_coords)
 
 ## Builds the complete grid including the chute, cone, walls and bottom.
 func initialise_grid(SEED: int) -> void:

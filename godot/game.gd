@@ -1,28 +1,31 @@
 extends Node
 
-@onready var Ground: TileMapLayer = %Ground
-@onready var GroundOverlay: TileMapLayer = %GroundOverlay
+@onready var GroundLayer: TileMapLayer = %GroundLayer
+@onready var GroundOverlayLayer: TileMapLayer = %GroundOverlayLayer
 @onready var TileInfo: Node = %TileInfo
 @onready var Generate: Node = $Generate
-@onready var Meta: Node = get_node("/root/Main/Meta")
+
+func Meta():
+	return get_node("/root/Main/Meta")
 
 func _ready() -> void:
 	add_points(0)
 	Generate.initialise_grid(round(Time.get_unix_time_from_system()))
 
 func tile_coords_to_data(coords: Vector2i) -> Dictionary:
-	var ground: Vector2i = Ground.get_cell_atlas_coords(coords) if Ground.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
-	var overlay: Vector2i = GroundOverlay.get_cell_atlas_coords(coords) if GroundOverlay.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
+	var ground: Vector2i = GroundLayer.get_cell_atlas_coords(coords) if GroundLayer.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
+	var overlay: Vector2i = GroundOverlayLayer.get_cell_atlas_coords(coords) if GroundOverlayLayer.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
 	return TileInfo.atlas_coords_to_data(ground, overlay)
 	
 const SECONDS_PER_ORE = 3.0
 
 func add_points(points: int) -> void:
-	if Meta.game_state.score == 0 and points > 0:
-		Meta.game_state.eruption_time_timestamp = Time.get_unix_time_from_system() + 15 - SECONDS_PER_ORE
+	if Meta().game_state.score == 0 and points > 0:
+		Meta().game_state.eruption_time_timestamp = Time.get_unix_time_from_system() + 15 - SECONDS_PER_ORE
 		%Camera.shake_state = 1
-	Meta.game_state.score += points
-	Meta.game_state.eruption_time_timestamp += SECONDS_PER_ORE if points > 0 else 0
+		Meta().start_eruption_countdown()
+	Meta().game_state.score += points
+	Meta().game_state.eruption_time_timestamp += SECONDS_PER_ORE if points > 0 else 0
 
 func mine(coords: Vector2i) -> void:
 	var tile_data = tile_coords_to_data(coords)
@@ -31,12 +34,12 @@ func mine(coords: Vector2i) -> void:
 	
 	await get_tree().create_timer(tile_data.gi.data.s).timeout
 	if next == 'Empty':
-		Ground.set_cell(coords, -1)
-		GroundOverlay.set_cell(coords, -1)
+		GroundLayer.set_cell(coords, -1)
+		GroundOverlayLayer.set_cell(coords, -1)
 		add_points(tile_data.oi.data.p)
 	else:
 		var next_coord_pairs = TileInfo.TILE_NAME_LOOKUP[next].g.c
-		Ground.set_cell(
+		GroundLayer.set_cell(
 			coords,
 			0,
 			next_coord_pairs[min(len(next_coord_pairs) - 1, prev_index)]
@@ -59,7 +62,7 @@ func wait_and_drop_if_still_there(i: int, j: int, was: String):
 		var next_ground_name: String = above_tile_name.substr(0, len(above_tile_name) - 1) + 'F'
 		var next_coord_pairs = TileInfo.TILE_NAME_LOOKUP[next_ground_name].g.c
 		var next_coord = next_coord_pairs[min(len(next_coord_pairs) - 1, above.gi.index)]
-		Ground.set_cell(above_coords, 0, next_coord)
+		GroundLayer.set_cell(above_coords, 0, next_coord)
 
 		while true:
 			await get_tree().create_timer(1.0).timeout
@@ -77,18 +80,18 @@ func wait_and_drop_if_still_there(i: int, j: int, was: String):
 						new_j = row_j - 1
 						break
 				
-				var player_coords: Vector2i = %Ground.local_to_map(%Player.global_position)
+				var player_coords: Vector2i = %GroundLayer.local_to_map(%Player.global_position)
 				if player_coords.x != i or player_coords.y < j or player_coords.y > new_j:
 					var dropped_ground_name = above_tile_name.substr(0, len(above_tile_name) - 1) + '1'
 					var dropped_coord_pairs = TileInfo.TILE_NAME_LOOKUP[dropped_ground_name].g.c
 					var dropped_coord = dropped_coord_pairs[min(len(dropped_coord_pairs) - 1, above.gi.index)]
 					
-					Ground.set_cell(above_coords, -1)
-					Ground.set_cell(Vector2i(i, new_j), 0, dropped_coord)
+					GroundLayer.set_cell(above_coords, -1)
+					GroundLayer.set_cell(Vector2i(i, new_j), 0, dropped_coord)
 					
-					if GroundOverlay.get_cell_source_id(above_coords) == 0:
-						GroundOverlay.set_cell(Vector2i(i, new_j), 0, GroundOverlay.get_cell_atlas_coords(above_coords))
-					GroundOverlay.set_cell(above_coords, -1)
+					if GroundOverlayLayer.get_cell_source_id(above_coords) == 0:
+						GroundOverlayLayer.set_cell(Vector2i(i, new_j), 0, GroundOverlayLayer.get_cell_atlas_coords(above_coords))
+					GroundOverlayLayer.set_cell(above_coords, -1)
 					
 					on_grid_change()
 			else:

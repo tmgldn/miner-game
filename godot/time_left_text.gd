@@ -7,7 +7,7 @@ func _process(delta: float) -> void:
 			text = ''
 		else:
 			if now >= %Meta.game_state.eruption_time_timestamp:
-				%Meta.game_state.erupted_time_timestamp = now
+				%Meta.erupt()
 				text = 'erupting!'
 				%TimeLeftHeaderText.visible = false
 			else:

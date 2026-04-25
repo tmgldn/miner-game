@@ -8,6 +8,7 @@
 [ext_resource type="LabelSettings" uid="uid://v6n1ofcxfx4n" path="res://time_left_text.tres" id="4_lquwl"]
 [ext_resource type="FontFile" uid="uid://c8utp7l7gla8w" path="res://Tiny5.ttf" id="8_5vw27"]
 [ext_resource type="Script" uid="uid://b85dhfthplk3l" path="res://meta.gd" id="8_kek77"]
+[ext_resource type="Script" uid="uid://clbmy8ja607uy" path="res://background_music.gd" id="9_kek77"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
 shader = ExtResource("1_0xm2m")
@@ -278,3 +279,10 @@ text = "press [Space] to restart game"
 label_settings = SubResource("LabelSettings_efxa6")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="." unique_id=1189384599]
+unique_name_in_owner = true
+autoplay = true
+script = ExtResource("9_kek77")
+
+[connection signal="finished" from="BackgroundMusic" to="BackgroundMusic" method="_on_finished"]

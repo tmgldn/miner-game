@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dyashlki7568a"
+path="res://.godot/imported/Komiku - A Tale is never forgotten - 08 Friend or foe -.mp3-b5aa4d701b38e877d846a2acb3fbdf54.mp3str"
+
+[deps]
+
+source_file="res://music/Komiku - A Tale is never forgotten - 08 Friend or foe -.mp3"
+dest_files=["res://.godot/imported/Komiku - A Tale is never forgotten - 08 Friend or foe -.mp3-b5aa4d701b38e877d846a2acb3fbdf54.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

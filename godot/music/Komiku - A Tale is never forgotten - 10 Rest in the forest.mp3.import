@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://lavidtlxt3qm"
+path="res://.godot/imported/Komiku - A Tale is never forgotten - 10 Rest in the forest.mp3-5e1c4b1f8dea00d165c00d5bc8aef6e9.mp3str"
+
+[deps]
+
+source_file="res://music/Komiku - A Tale is never forgotten - 10 Rest in the forest.mp3"
+dest_files=["res://.godot/imported/Komiku - A Tale is never forgotten - 10 Rest in the forest.mp3-5e1c4b1f8dea00d165c00d5bc8aef6e9.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

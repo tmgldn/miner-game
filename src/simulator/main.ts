@@ -1,4 +1,4 @@
-import type { TileID, Grid, Subgrid, GridOptions } from "../types";
+import type { Grid, Subgrid, GridOptions } from "../types";
 import { TILES, SUBTILES } from "../constants";
 import "./style.css";
 import { tick } from "../cycle/cycle";

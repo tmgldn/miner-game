@@ -144,7 +144,6 @@ export function buildGrid(O: GridOptions) {
     grid[O.H - 1][i] = "|";
   }
   grid[O.H - 4][centreIdx] = "|";
-  grid[O.H - 2][centreIdx] = "£";
 
   return grid;
 }

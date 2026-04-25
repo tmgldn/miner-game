@@ -5,7 +5,6 @@ export type TileID =
   | "-" // floor
   | "!" // lava
   | "#" // soil
-  | "£" // goal
   | "@" // boulder
   | "b" // Iron
   | "s" // silver

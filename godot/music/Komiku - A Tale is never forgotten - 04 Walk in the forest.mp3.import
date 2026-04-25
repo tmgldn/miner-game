@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dwhwjtevf5k12"
+path="res://.godot/imported/Komiku - A Tale is never forgotten - 04 Walk in the forest.mp3-8444d28b27c818826bacafd4263c0638.mp3str"
+
+[deps]
+
+source_file="res://music/Komiku - A Tale is never forgotten - 04 Walk in the forest.mp3"
+dest_files=["res://.godot/imported/Komiku - A Tale is never forgotten - 04 Walk in the forest.mp3-8444d28b27c818826bacafd4263c0638.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

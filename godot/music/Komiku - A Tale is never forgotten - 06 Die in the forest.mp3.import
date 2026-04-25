@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://55nig1wflox3"
+path="res://.godot/imported/Komiku - A Tale is never forgotten - 06 Die in the forest.mp3-4304103205687a2f6cabd72ca82828c7.mp3str"
+
+[deps]
+
+source_file="res://music/Komiku - A Tale is never forgotten - 06 Die in the forest.mp3"
+dest_files=["res://.godot/imported/Komiku - A Tale is never forgotten - 06 Die in the forest.mp3-4304103205687a2f6cabd72ca82828c7.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
