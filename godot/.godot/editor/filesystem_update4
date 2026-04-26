@@ -2,8 +2,9 @@ res://game.tscn
 res://subpixel.gdshader
 res://misc.tres
 res://ground.tres
-res://generate.gd
-res://player.gd
-res://game.gd
 res://fluid_layer.gd
+res://game.gd
+res://player.gd
+res://generate.gd
+res://tile_info.gd
 res://main.tscn

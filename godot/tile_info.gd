@@ -26,6 +26,7 @@ var OVERLAYS = {
 	'Emerald': {c = [[0, 7]], p = 100},
 	'Ruby': {c = [[0, 8]], p = 150},
 	'Diamond': {c = [[0, 9]], p = 250},
+	'RubyE': {c = [[0, 10]], p = 150}, # E = pending Explosion
 }
 
 var GROUND_LOOKUP: Dictionary[Vector2i, Dictionary] = {}
@@ -66,9 +67,12 @@ func _ready() -> void:
 
 	for g_name in GROUNDS_WITH_OVERLAYS.keys():
 		for o_name in OVERLAYS.keys():
-			TILE_NAME_LOOKUP[g_name + o_name] = {g = GROUNDS_WITH_OVERLAYS[g_name], o = OVERLAYS[o_name]}
+			TILE_NAME_LOOKUP[g_name + o_name] = {
+				g = GROUNDS_WITH_OVERLAYS[g_name],
+				o = OVERLAYS[o_name]
+			}
 	for g_name in GROUNDS_WITHOUT_OVERLAYS.keys():
 		TILE_NAME_LOOKUP[g_name] = {g = GROUNDS_WITHOUT_OVERLAYS[g_name], o = OVERLAYS['']}
 
 func atlas_coords_to_data(ground: Vector2i, overlay: Vector2i) -> Dictionary:
-	return { gi = GROUND_LOOKUP[ground], oi = OVERLAY_LOOKUP[overlay]}
+	return {gi = GROUND_LOOKUP[ground], oi = OVERLAY_LOOKUP[overlay]}

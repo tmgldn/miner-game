@@ -5,6 +5,7 @@ const JUMP_VELOCITY: float = -150.0
 var is_jumping := false
 var was_on_floor_recently := false
 var was_in_water_recently := false
+var was_in_gas_recently := false
 
 # 70.0 but becomes 90.0 during eruption
 const LAND_MAX_SPEED: float = 70.0
@@ -15,6 +16,9 @@ const WATER_MAX_SPEED: float = 50.0
 const WATER_ACCELERATION: float = 15.0
 const WATER_FRICTION: float = 30.0
 
+const OXYGEN_DRAIN_TIME: float = 0.5
+const OXYGEN_RECOVER_TIME: float = 0.01
+
 var timer_id := 0
 
 @onready var Meta := get_node("/root/Main/Meta")
@@ -24,7 +28,7 @@ func set_disable_jump_after_delay() -> void:
 	await get_tree().create_timer(0.1).timeout
 	if self.timer_id == new_timer_id:
 		was_on_floor_recently = false
-		
+
 func can_mine(tile_coords: Vector2i, player_coords: Vector2i) -> bool:
 	if (
 		tile_coords[0] != player_coords[0]
@@ -38,6 +42,7 @@ func can_mine(tile_coords: Vector2i, player_coords: Vector2i) -> bool:
 
 var is_mining := false
 var health := 3
+var oxygen := 8
 var is_in_lava := false
 
 const MINING_ACTIONS: Array = [
@@ -87,6 +92,7 @@ func start_healing(timeout_obj: Dictionary) -> void:
 			start_healing(heal_timeout)
 
 var has_escaped := false
+var time_since_last_oxygen_change := 0.0
 
 func _physics_process(delta: float) -> void:
 	if has_escaped or health <= 0:
@@ -94,8 +100,10 @@ func _physics_process(delta: float) -> void:
 	
 	var is_in_water_: bool = %FluidLayer.get_cell_atlas_coords(%FluidLayer.local_to_map(global_position)) == Vector2i(0, 1)
 	var is_in_water: bool = is_in_water_ or was_in_water_recently
-	# var is_in_gas: bool = %FluidLayer.get_cell_atlas_coords(%FluidLayer.local_to_map(global_position)) == Vector2i(1, 1)
-	
+	var is_in_gas_: bool = %FluidLayer.get_cell_atlas_coords(%FluidLayer.local_to_map(global_position)) == Vector2i(1, 1)
+	var is_in_gas: bool = is_in_gas_ or was_in_gas_recently
+	var can_breathe: bool = not (is_in_water or is_in_gas)
+
 	var MAX_SPEED: float = WATER_MAX_SPEED if is_in_water else LAND_MAX_SPEED
 	var ACCELERATION: float = WATER_ACCELERATION if is_in_water else LAND_ACCELERATION
 	var FRICTION: float = WATER_FRICTION if is_in_water else LAND_FRICTION
@@ -112,7 +120,6 @@ func _physics_process(delta: float) -> void:
 	if health < 3 and heal_timeout.finished:
 		heal_timeout = {finished = false, cancel = false}
 		start_healing(heal_timeout)
-	
 	
 	if is_on_floor():
 		is_jumping = false
@@ -170,8 +177,11 @@ func _physics_process(delta: float) -> void:
 		var h_direction := Input.get_axis("left", "right")
 		if h_direction < 0:
 			%PlayerSprite.flip_h = true
+			%OxygenIndicator.offset.x = 12
+			
 		elif h_direction > 0:
 			%PlayerSprite.flip_h = false
+			%OxygenIndicator.offset.x = 0
 
 		if h_direction == 0:
 			%PlayerSprite.play("idle")
@@ -183,10 +193,22 @@ func _physics_process(delta: float) -> void:
 		if is_in_water:
 			velocity.y = min(velocity.y, SINK_VELOCITY)
 
+	time_since_last_oxygen_change += delta
+	if time_since_last_oxygen_change >= (OXYGEN_RECOVER_TIME if can_breathe else OXYGEN_DRAIN_TIME):
+		update_oxygen(can_breathe)
+		time_since_last_oxygen_change = 0.0
+
 	was_in_water_recently = is_in_water_
+	was_in_gas_recently = is_in_gas_
 
 	move_and_slide()
 
+func update_oxygen(can_breathe: bool) -> void:
+	var next_oxygen: int = oxygen + (1 if can_breathe else -1)
+	if next_oxygen < 0:
+		add_damage_if_not_immune(1)
+	oxygen = clamp(next_oxygen, 0, 8)
+	%OxygenIndicator.texture.region.position.x = 8.0 * oxygen
 
 func _on_lava_body_entered(body: Node2D) -> void:
 	if body == $".":

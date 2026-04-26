@@ -101,7 +101,6 @@ func set_cell_from_str(i: int, j: int, tile_str: String) -> void:
 		%GroundLayer.set_cell(Vector2i(j, i), 0, ground_coords)
 	var overlay_coords: Vector2i = data.o.c[abs(i - j) % len(data.o.c)]
 	if overlay_coords == Vector2i(-1, -1):
-		
 		%GroundOverlayLayer.set_cell(Vector2i(j, i), -1)
 	else:
 		%GroundOverlayLayer.set_cell(Vector2i(j, i), 0, overlay_coords)
@@ -182,7 +181,7 @@ func initialise_grid(SEED: int) -> void:
 	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx + 3, 'Soil0')
 	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx + 4, 'Soil0')
 	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx + 5, 'Soil0')
-	
+
 	set_cell_from_str(CHUTE_DEPTH + 3, centreIdx, 'Soil0')
 
 	# -------- side walls --------
