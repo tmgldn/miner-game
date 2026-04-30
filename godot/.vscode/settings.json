@@ -1,9 +1,0 @@
-{
-  "files.exclude": {
-    "**/*.uid": true,
-    "**/*.import": true,
-    "**/*.tres": true,
-    "**/*.png": true,
-    "**/*.ttf": true
-  }
-}

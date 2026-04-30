@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cpvalr8t7nu3s"
+path="res://.godot/imported/13 A big boss fight for the road.mp3-60206e0c590b258e1750d7678df5bfdc.mp3str"
+
+[deps]
+
+source_file="res://music/13 A big boss fight for the road.mp3"
+dest_files=["res://.godot/imported/13 A big boss fight for the road.mp3-60206e0c590b258e1750d7678df5bfdc.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

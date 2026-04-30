@@ -1,7 +1,0 @@
-[gd_resource type="LabelSettings" format=3 uid="uid://cvai3rnu7ka27"]
-
-[ext_resource type="FontFile" uid="uid://c8utp7l7gla8w" path="res://Tiny5.ttf" id="1_vjyw2"]
-
-[resource]
-font = ExtResource("1_vjyw2")
-font_size = 48

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://d3ad4nx15ayp6"
+path="res://.godot/imported/08 Friend or foe.mp3-9ea780c114f74abe3253bcfbb8d0aa05.mp3str"
+
+[deps]
+
+source_file="res://music/08 Friend or foe.mp3"
+dest_files=["res://.godot/imported/08 Friend or foe.mp3-9ea780c114f74abe3253bcfbb8d0aa05.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

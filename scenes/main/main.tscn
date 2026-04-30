@@ -1,0 +1,288 @@
+[gd_scene format=3 uid="uid://cn6rmo6yghaol"]
+
+[ext_resource type="Shader" uid="uid://0xjbmrhpkgdk" path="res://scripts/subpixel.gdshader" id="1_0xm2m"]
+[ext_resource type="LabelSettings" uid="uid://db7of4nhqu3nf" path="res://score_text.tres" id="3_lquwl"]
+[ext_resource type="Script" uid="uid://c2pw33mnlebok" path="res://scripts/time_left_text.gd" id="4_1bvp3"]
+[ext_resource type="LabelSettings" uid="uid://cvai3rnu7ka27" path="res://time_left_header_text.tres" id="4_7mycd"]
+[ext_resource type="Script" uid="uid://cvy5m1cobg8ib" path="res://scripts/score_text.gd" id="4_272bh"]
+[ext_resource type="LabelSettings" uid="uid://v6n1ofcxfx4n" path="res://time_left_text.tres" id="4_lquwl"]
+[ext_resource type="FontFile" uid="uid://c8utp7l7gla8w" path="res://fonts/Tiny5.ttf" id="8_5vw27"]
+[ext_resource type="Script" uid="uid://b85dhfthplk3l" path="res://scripts/meta.gd" id="8_kek77"]
+[ext_resource type="Script" uid="uid://clbmy8ja607uy" path="res://scripts/background_music.gd" id="9_kek77"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
+shader = ExtResource("1_0xm2m")
+shader_parameter/cam_offset = Vector2(0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hve3p"]
+shader = ExtResource("1_0xm2m")
+shader_parameter/cam_offset = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ycdy4"]
+font = ExtResource("8_5vw27")
+font_size = 48
+
+[sub_resource type="LabelSettings" id="LabelSettings_w48qg"]
+font = ExtResource("8_5vw27")
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_kek77"]
+font = ExtResource("8_5vw27")
+font_size = 180
+
+[sub_resource type="LabelSettings" id="LabelSettings_4c57u"]
+font = ExtResource("8_5vw27")
+font_size = 48
+
+[sub_resource type="LabelSettings" id="LabelSettings_5vw27"]
+font = ExtResource("8_5vw27")
+font_size = 120
+
+[sub_resource type="LabelSettings" id="LabelSettings_dg77c"]
+font = ExtResource("8_5vw27")
+font_size = 120
+
+[sub_resource type="LabelSettings" id="LabelSettings_efxa6"]
+font = ExtResource("8_5vw27")
+font_size = 48
+
+[node name="Main" type="Node2D" unique_id=326270260]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=498850910]
+unique_name_in_owner = true
+texture_filter = 1
+material = SubResource("ShaderMaterial_h2yge")
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 316.0
+offset_bottom = 176.0
+scale = Vector2(6, 6)
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1325874699]
+unique_name_in_owner = true
+handle_input_locally = false
+size = Vector2i(322, 182)
+render_target_update_mode = 4
+
+[node name="Meta" type="Control" parent="." unique_id=1023715222]
+unique_name_in_owner = true
+process_mode = 3
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+script = ExtResource("8_kek77")
+
+[node name="Overlay" type="Control" parent="Meta" unique_id=573180657]
+unique_name_in_owner = true
+process_mode = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopRightBox" type="Control" parent="Meta/Overlay" unique_id=276374348]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Box" type="ColorRect" parent="Meta/Overlay/TopRightBox" unique_id=392207620]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 1468.0
+offset_top = 12.0
+offset_right = 1868.0
+offset_bottom = 312.0
+grow_horizontal = 0
+color = Color(0, 0, 0, 0.54901963)
+
+[node name="TopRight" type="VBoxContainer" parent="Meta/Overlay/TopRightBox" unique_id=1880104241]
+use_parent_material = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 1468.0
+offset_top = 12.0
+offset_right = 1868.0
+offset_bottom = 312.0
+grow_horizontal = 0
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="ScoreText" type="Label" parent="Meta/Overlay/TopRightBox/TopRight" unique_id=554737377]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_hve3p")
+layout_mode = 2
+text = " "
+label_settings = ExtResource("3_lquwl")
+horizontal_alignment = 1
+script = ExtResource("4_272bh")
+
+[node name="TimeLeftHeaderText" type="Label" parent="Meta/Overlay/TopRightBox/TopRight" unique_id=1430798176]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_hve3p")
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+text = " eruption in"
+label_settings = ExtResource("4_7mycd")
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="TimeLeftText" type="Label" parent="Meta/Overlay/TopRightBox/TopRight" unique_id=1269484667]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+label_settings = ExtResource("4_lquwl")
+horizontal_alignment = 1
+script = ExtResource("4_1bvp3")
+
+[node name="PauseMenu" type="Control" parent="Meta/Overlay" unique_id=338298279]
+unique_name_in_owner = true
+process_mode = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Box" type="ColorRect" parent="Meta/Overlay/PauseMenu" unique_id=1893538363]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.54901963)
+
+[node name="TopRight" type="VBoxContainer" parent="Meta/Overlay/PauseMenu" unique_id=25664955]
+use_parent_material = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Paused" type="Label" parent="Meta/Overlay/PauseMenu/TopRight" unique_id=530373148]
+layout_mode = 2
+text = "PAUSED"
+label_settings = SubResource("LabelSettings_ycdy4")
+horizontal_alignment = 1
+
+[node name="Esc to unpause" type="Label" parent="Meta/Overlay/PauseMenu/TopRight" unique_id=566063732]
+layout_mode = 2
+text = "Press [Esc] to continue"
+label_settings = SubResource("LabelSettings_w48qg")
+horizontal_alignment = 1
+
+[node name="StartScreen" type="Control" parent="Meta" unique_id=1928912944]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="Meta/StartScreen" unique_id=1801950376]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.9509471, 0.3651167, 3.85046e-07, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Meta/StartScreen/Background" unique_id=983927575]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 11.0
+offset_top = 8.0
+offset_right = 11.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="TitleText" type="Label" parent="Meta/StartScreen/Background/VBoxContainer" unique_id=400323701]
+layout_mode = 2
+text = "BEARCANO"
+label_settings = SubResource("LabelSettings_kek77")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartText" type="Label" parent="Meta/StartScreen/Background/VBoxContainer" unique_id=826267742]
+layout_mode = 2
+text = "press [Space] to start game"
+label_settings = SubResource("LabelSettings_4c57u")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndScreen" type="Control" parent="Meta" unique_id=260156003]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="Meta/EndScreen" unique_id=236208790]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.9509471, 0.3651167, 3.85046e-07, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Meta/EndScreen/Background" unique_id=2103962549]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="EndScreenTitle" type="Label" parent="Meta/EndScreen/Background/VBoxContainer" unique_id=1463788580]
+unique_name_in_owner = true
+layout_mode = 2
+label_settings = SubResource("LabelSettings_5vw27")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndScreenScore" type="Label" parent="Meta/EndScreen/Background/VBoxContainer" unique_id=457268963]
+unique_name_in_owner = true
+layout_mode = 2
+text = "£???"
+label_settings = SubResource("LabelSettings_dg77c")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RestartText" type="Label" parent="Meta/EndScreen/Background/VBoxContainer" unique_id=741532289]
+layout_mode = 2
+text = "press [Space] to restart game"
+label_settings = SubResource("LabelSettings_efxa6")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="." unique_id=1189384599]
+unique_name_in_owner = true
+autoplay = true
+script = ExtResource("9_kek77")
+
+[connection signal="finished" from="BackgroundMusic" to="BackgroundMusic" method="_on_finished"]

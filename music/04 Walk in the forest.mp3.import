@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dvkkomtp4a7e5"
+path="res://.godot/imported/04 Walk in the forest.mp3-bdbe68216902600d593de8eaba02e33a.mp3str"
+
+[deps]
+
+source_file="res://music/04 Walk in the forest.mp3"
+dest_files=["res://.godot/imported/04 Walk in the forest.mp3-bdbe68216902600d593de8eaba02e33a.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
