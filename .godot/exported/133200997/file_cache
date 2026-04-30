@@ -1,8 +1,0 @@
-res://game.tscn::c5e7023c4bd9576e2596077ec76cad6a::1777227172::res://.godot/exported/133200997/export-609f762188a68253d349ec58c4f3a8d3-game.scn
-res://ground.tres::5761fe79fbb1999dcb1fff95f071e7ff::1777197176::res://.godot/exported/133200997/export-5ef0e8f011d7ed3c634743f234a0c30f-ground.res
-res://lava_shape.tres::5f7fcfea0ea12026f22edd27e918184f::1774960623::res://.godot/exported/133200997/export-7cdf2dd5a60407637142fdecd1650dc4-lava_shape.res
-res://main.tscn::dcedc98ccdf61e332fe2ca3e38364ef9::1777196194::res://.godot/exported/133200997/export-3070c538c03ee49b7677ff960a3f5195-main.scn
-res://misc.tres::503479f4490697c48dadbc7260ba7e3a::1777119797::res://.godot/exported/133200997/export-3dfa62b9c81a67fb9fed4417e2d0987f-misc.res
-res://score_text.tres::6d2cc492cce3572cf0253c476a72c7c8::1774910551::res://.godot/exported/133200997/export-e8251cb4f1cca9dbc85cad27d3aa8713-score_text.res
-res://time_left_header_text.tres::a4a66b5cc5f674c3f54bfceb217a847b::1774910571::res://.godot/exported/133200997/export-f3758afcd2050ccff716772ea3f88e80-time_left_header_text.res
-res://time_left_text.tres::bd569588d76da4b87cd4a4ffe6b1b543::1774910647::res://.godot/exported/133200997/export-e3453884416fba72d9c5c30e581fd1ca-time_left_text.res
