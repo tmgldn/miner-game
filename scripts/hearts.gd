@@ -14,8 +14,8 @@ func _physics_process(delta: float) -> void:
 			previous_health = health
 		if time_of_last_change + 5.1 >= Time.get_unix_time_from_system():
 			visible = true
-			$Heart1.texture.region = Rect2(40, 0, 8, 8) if health >= 1 else Rect2(32, 0, 8, 8)
-			$Heart2.texture.region = Rect2(40, 0, 8, 8) if health >= 2 else Rect2(32, 0, 8, 8)
-			$Heart3.texture.region = Rect2(40, 0, 8, 8) if health >= 3 else Rect2(32, 0, 8, 8)
+			$Heart1.texture.region = Rect2(8, 8, 8, 8) if health >= 1 else Rect2(0, 8, 8, 8)
+			$Heart2.texture.region = Rect2(8, 8, 8, 8) if health >= 2 else Rect2(0, 8, 8, 8)
+			$Heart3.texture.region = Rect2(8, 8, 8, 8) if health >= 3 else Rect2(0, 8, 8, 8)
 		else:
 			visible = false

@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://cn6rmo6yghaol"]
 
-[ext_resource type="Shader" uid="uid://0xjbmrhpkgdk" path="res://scripts/subpixel.gdshader" id="1_0xm2m"]
-[ext_resource type="LabelSettings" uid="uid://db7of4nhqu3nf" path="res://score_text.tres" id="3_lquwl"]
-[ext_resource type="Script" uid="uid://c2pw33mnlebok" path="res://scripts/time_left_text.gd" id="4_1bvp3"]
-[ext_resource type="LabelSettings" uid="uid://cvai3rnu7ka27" path="res://time_left_header_text.tres" id="4_7mycd"]
-[ext_resource type="Script" uid="uid://cvy5m1cobg8ib" path="res://scripts/score_text.gd" id="4_272bh"]
-[ext_resource type="LabelSettings" uid="uid://v6n1ofcxfx4n" path="res://time_left_text.tres" id="4_lquwl"]
-[ext_resource type="FontFile" uid="uid://c8utp7l7gla8w" path="res://fonts/Tiny5.ttf" id="8_5vw27"]
-[ext_resource type="Script" uid="uid://b85dhfthplk3l" path="res://scripts/meta.gd" id="8_kek77"]
-[ext_resource type="Script" uid="uid://clbmy8ja607uy" path="res://scripts/background_music.gd" id="9_kek77"]
+[ext_resource type="Shader" uid="uid://dvr51qn5ivlf7" path="res://shaders/subpixel.gdshader" id="1_0xm2m"]
+[ext_resource type="LabelSettings" uid="uid://db7of4nhqu3nf" path="res://tilesets/score_text.tres" id="3_lquwl"]
+[ext_resource type="Script" uid="uid://dd0s7a4mr7ghd" path="res://scripts/time_left_text.gd" id="4_1bvp3"]
+[ext_resource type="LabelSettings" uid="uid://cvai3rnu7ka27" path="res://tilesets/time_left_header_text.tres" id="4_7mycd"]
+[ext_resource type="Script" uid="uid://ci4od77h2cv61" path="res://scripts/score_text.gd" id="4_272bh"]
+[ext_resource type="LabelSettings" uid="uid://v6n1ofcxfx4n" path="res://tilesets/time_left_text.tres" id="4_lquwl"]
+[ext_resource type="FontFile" uid="uid://drl2n5egv160s" path="res://fonts/Tiny5.ttf" id="8_5vw27"]
+[ext_resource type="Script" uid="uid://da87q6m4smw78" path="res://scripts/meta.gd" id="8_kek77"]
+[ext_resource type="Script" uid="uid://q2egu8tnmlvf" path="res://scripts/background_music.gd" id="9_kek77"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
 shader = ExtResource("1_0xm2m")
@@ -26,9 +26,10 @@ font_size = 48
 font = ExtResource("8_5vw27")
 font_size = 32
 
-[sub_resource type="LabelSettings" id="LabelSettings_kek77"]
+[sub_resource type="LabelSettings" id="LabelSettings_b1x3f"]
+line_spacing = -36.0
 font = ExtResource("8_5vw27")
-font_size = 180
+font_size = 120
 
 [sub_resource type="LabelSettings" id="LabelSettings_4c57u"]
 font = ExtResource("8_5vw27")
@@ -52,16 +53,16 @@ font_size = 48
 unique_name_in_owner = true
 texture_filter = 1
 material = SubResource("ShaderMaterial_h2yge")
-offset_left = -6.0
+offset_left = -3.0
 offset_top = -6.0
-offset_right = 316.0
-offset_bottom = 176.0
+offset_right = 159.0
+offset_bottom = 156.0
 scale = Vector2(6, 6)
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1325874699]
 unique_name_in_owner = true
 handle_input_locally = false
-size = Vector2i(322, 182)
+size = Vector2i(162, 162)
 render_target_update_mode = 4
 
 [node name="Meta" type="Control" parent="." unique_id=1023715222]
@@ -69,8 +70,8 @@ unique_name_in_owner = true
 process_mode = 3
 layout_mode = 3
 anchors_preset = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+offset_right = 960.0
+offset_bottom = 960.0
 script = ExtResource("8_kek77")
 
 [node name="Overlay" type="Control" parent="Meta" unique_id=573180657]
@@ -84,6 +85,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TopRightBox" type="Control" parent="Meta/Overlay" unique_id=276374348]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -93,9 +95,9 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = 1468.0
+offset_left = 508.0
 offset_top = 12.0
-offset_right = 1868.0
+offset_right = 908.0
 offset_bottom = 312.0
 grow_horizontal = 0
 color = Color(0, 0, 0, 0.54901963)
@@ -106,9 +108,9 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = 1468.0
+offset_left = 1467.0
 offset_top = 12.0
-offset_right = 1868.0
+offset_right = 1867.0
 offset_bottom = 312.0
 grow_horizontal = 0
 theme_override_constants/separation = 0
@@ -145,6 +147,7 @@ script = ExtResource("4_1bvp3")
 [node name="PauseMenu" type="Control" parent="Meta/Overlay" unique_id=338298279]
 unique_name_in_owner = true
 process_mode = 3
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -216,10 +219,11 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="TitleText" type="Label" parent="Meta/StartScreen/Background/VBoxContainer" unique_id=400323701]
+[node name="TitleText" type="Label" parent="Meta/StartScreen/Background/VBoxContainer" unique_id=1979707157]
 layout_mode = 2
-text = "BEARCANO"
-label_settings = SubResource("LabelSettings_kek77")
+text = "made of
+stronger fluff"
+label_settings = SubResource("LabelSettings_b1x3f")
 horizontal_alignment = 1
 vertical_alignment = 1
 

@@ -20,50 +20,50 @@ func _physics_process(delta: float) -> void:
 
 # probability of rise given obstacle
 const FIRE_RULES = {
-	Vector2i(0, 0): { # Fire 0
+	Vector2i(0, 3): { # Fire 0
 		Vector2i(-1, -1): 0.3, # Empty
 		Vector2i(0, 1): 0.0, # Water
-		Vector2i(1, 1): 1.0, # Gas
-		Vector2i(0, 0): 0.3, # Fire 0
-		Vector2i(1, 0): 0.2, # Fire 1
-		Vector2i(2, 0): 0.1, # Fire 2
-		Vector2i(3, 0): 0.0, # Fire 3
+		Vector2i(0, 2): 1.0, # Gas
+		Vector2i(0, 3): 0.3, # Fire 0
+		Vector2i(0, 4): 0.2, # Fire 1
+		Vector2i(0, 5): 0.1, # Fire 2
+		Vector2i(0, 6): 0.0, # Fire 3
 	},
-	Vector2i(1, 0): { # Fire 1
+	Vector2i(0, 4): { # Fire 1
 		Vector2i(-1, -1): 0.3, # Empty
 		Vector2i(0, 1): 0.0, # Water
-		Vector2i(1, 1): 1.0, # Gas
-		Vector2i(0, 0): 0.3, # Fire 0
-		Vector2i(1, 0): 0.2, # Fire 1
-		Vector2i(2, 0): 0.1, # Fire 2
-		Vector2i(3, 0): 0.0, # Fire 3
+		Vector2i(0, 2): 1.0, # Gas
+		Vector2i(0, 3): 0.3, # Fire 0
+		Vector2i(0, 4): 0.2, # Fire 1
+		Vector2i(0, 5): 0.1, # Fire 2
+		Vector2i(0, 6): 0.0, # Fire 3
 	},
-	Vector2i(2, 0): { # Fire 2
+	Vector2i(0, 5): { # Fire 2
 		Vector2i(-1, -1): 0.3, # Empty
 		Vector2i(0, 1): 0.0, # Water
-		Vector2i(1, 1): 1.0, # Gas
-		Vector2i(0, 0): 0.3, # Fire 0
-		Vector2i(1, 0): 0.2, # Fire 1
-		Vector2i(2, 0): 0.1, # Fire 2
-		Vector2i(3, 0): 0.0, # Fire 3
+		Vector2i(0, 2): 1.0, # Gas
+		Vector2i(0, 3): 0.3, # Fire 0
+		Vector2i(0, 4): 0.2, # Fire 1
+		Vector2i(0, 5): 0.1, # Fire 2
+		Vector2i(0, 6): 0.0, # Fire 3
 	},
-	Vector2i(3, 0): { # Fire 3
+	Vector2i(0, 6): { # Fire 3
 		Vector2i(-1, -1): 0.0, # Empty
 		Vector2i(0, 1): 0.0, # Water
-		Vector2i(1, 1): 0.5, # Gas
-		Vector2i(0, 0): 0.3, # Fire 0
-		Vector2i(1, 0): 0.2, # Fire 1
-		Vector2i(2, 0): 0.1, # Fire 2
-		Vector2i(3, 0): 0.0, # Fire 3
+		Vector2i(0, 2): 0.5, # Gas
+		Vector2i(0, 3): 0.3, # Fire 0
+		Vector2i(0, 4): 0.2, # Fire 1
+		Vector2i(0, 5): 0.1, # Fire 2
+		Vector2i(0, 6): 0.0, # Fire 3
 	},
 }
 
 func tick_fire() -> void:
 	for atlas_coords in [
-		Vector2i(3, 0),
-		Vector2i(2, 0),
-		Vector2i(1, 0),
-		Vector2i(0, 0)
+		Vector2i(0, 6),
+		Vector2i(0, 5),
+		Vector2i(0, 4),
+		Vector2i(0, 3)
 	]:
 		for fire_coords in get_used_cells_by_id(0, atlas_coords):
 			# die
@@ -106,6 +106,15 @@ func tick_fire() -> void:
 							)
 				else:
 					var other_atlas_coords: Vector2i = get_cell_atlas_coords(other_coords)
+					print(
+						FIRE_RULES
+					)
+					print(
+						atlas_coords
+					)
+					print(
+						other_atlas_coords
+					)
 					if randf() <= FIRE_RULES[atlas_coords][other_atlas_coords]:
 						# rise
 						set_fire(other_coords, atlas_coords[0])
@@ -192,18 +201,18 @@ func is_empty(coords: Vector2i) -> bool:
 	return (not is_solid(coords)) and get_cell_atlas_coords(coords) == Vector2i(-1, -1)
 func is_solid(coords: Vector2i) -> bool:
 	return %GroundLayer.get_cell_atlas_coords(Vector2i(coords[0] >> 1, coords[1] >> 1)) != Vector2i(-1, -1)
-func is_gas(coords: Vector2i) -> bool:
-	return get_cell_atlas_coords(coords) == Vector2i(1, 1)
 func is_water(coords: Vector2i) -> bool:
 	return get_cell_atlas_coords(coords) == Vector2i(0, 1)
+func is_gas(coords: Vector2i) -> bool:
+	return get_cell_atlas_coords(coords) == Vector2i(0, 2)
 func is_active_fire(coords: Vector2i) -> bool:
-	return get_cell_atlas_coords(coords) == Vector2i(0, 0)
+	return get_cell_atlas_coords(coords) == Vector2i(0, 3)
 func is_inactive_fire(coords: Vector2i) -> bool:
 	var atlas_coords = get_cell_atlas_coords(coords)
-	return atlas_coords[1] == 0 and atlas_coords[0] <= 3 and atlas_coords[0] >= 1
+	return atlas_coords[0] == 0 and atlas_coords[1] <= 6 and atlas_coords[1] >= 4
 func is_any_fire(coords: Vector2i) -> bool:
 	var atlas_coords = get_cell_atlas_coords(coords)
-	return atlas_coords[1] == 0 and atlas_coords[0] <= 3 and atlas_coords[0] >= 0
+	return atlas_coords[0] == 0 and atlas_coords[1] <= 6 and atlas_coords[1] >= 3
 func can_burn(coords: Vector2i) -> bool:
 	return is_gas(coords) or is_empty(coords)
 func can_explode(coords: Vector2i) -> bool:
@@ -220,24 +229,20 @@ func can_be_displaced_by_ground(coords: Vector2i) -> bool:
 func is_in_bounds(coords: Vector2i):
 	return coords[0] >= 0 and coords[0] <= 61 and coords[1] >= 0
 
-func set_cell_bounded(coords: Vector2i, id: int, atlas_coords: Vector2i = Vector2i(-1, -1)):
-	if is_in_bounds(coords):
-		set_cell(coords, id, atlas_coords)
-
 func set_empty(coords: Vector2i) -> void: # does not empty ground tile
-	set_cell_bounded(coords, -1)
+	set_cell(coords, -1)
 func set_gas(coords: Vector2i) -> void:
-	set_cell_bounded(coords, 0, Vector2i(1, 1))
+	set_cell(coords, 0, Vector2i(0, 2))
 func set_water(coords: Vector2i) -> void:
-	set_cell_bounded(coords, 0, Vector2i(0, 1))
+	set_cell(coords, 0, Vector2i(0, 1))
 func set_fire(coords: Vector2i, level: int = 0) -> void:
-	set_cell_bounded(coords, 0, Vector2i(level, 0))
+	set_cell(coords, 0, Vector2i(level, 0))
 
 func swap_cell(a: Vector2i, b: Vector2i) -> void:
 	if is_in_bounds(a) and is_in_bounds(b):
 		var temp = get_cell_atlas_coords(a)
-		set_cell_bounded(a, 0, get_cell_atlas_coords(b))
-		set_cell_bounded(b, 0, temp)
+		set_cell(a, 0, get_cell_atlas_coords(b))
+		set_cell(b, 0, temp)
 	else:
 		set_empty(a)
 		set_empty(b)
@@ -245,7 +250,7 @@ func swap_cell(a: Vector2i, b: Vector2i) -> void:
 # this maps 16x16 grid tile locations for sapphires to their bottom two 8x8 subtiles
 func get_water_sources() -> Array[Vector2i]:
 	var output_locs: Array[Vector2i] = []
-	for loc in %GroundOverlayLayer.get_used_cells_by_id(0, Vector2i(0, 6)):
+	for loc in %GroundOverlayLayer.get_used_cells_by_id(0, Vector2i(0, 3)):
 		output_locs.append(Vector2i(loc[0] * 2, loc[1] * 2 + 1))
 		output_locs.append(Vector2i(loc[0] * 2 + 1, loc[1] * 2 + 1))
 	return output_locs
@@ -253,7 +258,7 @@ func get_water_sources() -> Array[Vector2i]:
 # this maps 16x16 grid tile locations for emeralds to their top two 8x8 subtiles
 func get_gas_sources() -> Array[Vector2i]:
 	var output_locs: Array[Vector2i] = []
-	for loc in %GroundOverlayLayer.get_used_cells_by_id(0, Vector2i(0, 7)):
+	for loc in %GroundOverlayLayer.get_used_cells_by_id(0, Vector2i(0, 4)):
 		output_locs.append(Vector2i(loc[0] * 2, loc[1] * 2))
 		output_locs.append(Vector2i(loc[0] * 2 + 1, loc[1] * 2))
 	return output_locs
@@ -264,4 +269,4 @@ func get_water_cells() -> Array[Vector2i]:
 	return water_cells
 	
 func get_gas_cells() -> Array[Vector2i]:
-	return get_used_cells_by_id(0, Vector2i(1, 1))
+	return get_used_cells_by_id(0, Vector2i(0, 2))

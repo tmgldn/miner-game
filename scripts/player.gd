@@ -100,7 +100,7 @@ func _physics_process(delta: float) -> void:
 
 	var is_in_water_: bool = %FluidLayer.get_cell_atlas_coords(%FluidLayer.local_to_map(global_position)) == Vector2i(0, 1)
 	var is_in_water: bool = is_in_water_ or was_in_water_recently
-	var is_in_gas_: bool = %FluidLayer.get_cell_atlas_coords(%FluidLayer.local_to_map(global_position)) == Vector2i(1, 1)
+	var is_in_gas_: bool = %FluidLayer.get_cell_atlas_coords(%FluidLayer.local_to_map(global_position)) == Vector2i(0, 2)
 	var is_in_gas: bool = is_in_gas_ or was_in_gas_recently
 	var can_breathe: bool = not (is_in_water or is_in_gas)
 

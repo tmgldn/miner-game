@@ -16,7 +16,7 @@ const INITIAL_GAME_STATE = {
 var last_meta_state: MetaState = MetaState.EndScreen
 var meta_state: MetaState = MetaState.StartScreen
 var game_state = INITIAL_GAME_STATE.duplicate()
-var game_scene = preload("res://game.tscn")
+var game_scene = preload("res://scenes/game/game.tscn")
 var pause_time: float = -1
 
 func _process(delta: float) -> void:

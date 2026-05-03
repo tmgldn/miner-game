@@ -1,6 +1,6 @@
 [gd_resource type="LabelSettings" format=3 uid="uid://v6n1ofcxfx4n"]
 
-[ext_resource type="FontFile" uid="uid://c8utp7l7gla8w" path="res://fonts/Tiny5.ttf" id="1_ciong"]
+[ext_resource type="FontFile" uid="uid://drl2n5egv160s" path="res://fonts/Tiny5.ttf" id="1_ciong"]
 
 [resource]
 line_spacing = 0.0

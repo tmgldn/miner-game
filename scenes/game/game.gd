@@ -13,20 +13,30 @@ func _ready() -> void:
 	Generate.initialise_grid(round(Time.get_unix_time_from_system()))
 
 func tile_coords_to_data(coords: Vector2i) -> Dictionary:
-	var ground: Vector2i = GroundLayer.get_cell_atlas_coords(coords) if GroundLayer.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
-	var overlay: Vector2i = GroundOverlayLayer.get_cell_atlas_coords(coords) if GroundOverlayLayer.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
-	return TileInfo.atlas_coords_to_data(ground, overlay)
+	var ground: Vector2i
+	var overlay: Vector2i
+
+	var tile_metadata: TileData = (%GroundLayer as TileMapLayer).get_cell_tile_data(coords)
+	if tile_metadata != null and tile_metadata.get_custom_data("is_placeholder"):
+		ground = Vector2i(-1, -1)
+		overlay = Vector2i(-1, -1)
+	else:
+		ground = GroundLayer.get_cell_atlas_coords(coords) if GroundLayer.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
+		overlay = GroundOverlayLayer.get_cell_atlas_coords(coords) if GroundOverlayLayer.get_cell_source_id(coords) == 0 else Vector2i(-1, -1)
 	
+	return TileInfo.atlas_coords_to_data(ground, overlay)
+
 const SECONDS_PER_ORE = 3.0
 const RUBY_EXPLOSION_SECONDS = 2.0
 
 func add_points(points: int) -> void:
 	if Meta().game_state.score == 0 and points > 0:
-		Meta().game_state.eruption_time_timestamp = Time.get_unix_time_from_system() + 15 - SECONDS_PER_ORE
-		%Camera.shake_state = 1
-		Meta().start_eruption_countdown()
+		pass
+		#Meta().game_state.eruption_time_timestamp = Time.get_unix_time_from_system() + 15 - SECONDS_PER_ORE
+		#%Camera.shake_state = 1
+		#Meta().start_eruption_countdown()
 	Meta().game_state.score += points
-	Meta().game_state.eruption_time_timestamp += SECONDS_PER_ORE if points > 0 else 0
+	Meta().game_state.eruption_time_timestamp += SECONDS_PER_ORE if points > 0 else 0.0
 
 
 var PENDING_EXPLOSIONS: Dictionary = {}
@@ -73,7 +83,6 @@ func mine(coords: Vector2i) -> void:
 			next_coord_pairs[min(len(next_coord_pairs) - 1, prev_index)]
 		)
 	on_grid_change()
-
 
 func wait_and_drop_if_still_there(i: int, j: int, was: String):
 	await get_tree().create_timer(0.2).timeout
@@ -174,8 +183,9 @@ func wait_and_explode(ref: Dictionary):
 
 func on_grid_change():
 	# check for tiles that need to respond to gravity
-	for i in range(0, Generate.W):
-		for j in range(1, Generate.H):
+	var rect: Rect2i = %GroundLayer.get_used_rect()
+	for i in range(rect.position.x, rect.position.x + rect.size.x):
+		for j in range(rect.position.y, rect.position.y + rect.size.y):
 			var coords = Vector2i(i, j)
 			var tile_data = tile_coords_to_data(coords)
 
@@ -184,10 +194,13 @@ func on_grid_change():
 				wait_and_explode(ref)
 				PENDING_EXPLOSIONS.set(coords, ref)
 
+			if tile_data.gi == null:
+				print(tile_data, coords)
+
 			if tile_data.gi.name == 'Empty':
 				var above_data = tile_coords_to_data(Vector2i(i, j - 1))
 				var above_tile_name = above_data.gi.name
-				if above_tile_name == 'Soil2' || above_tile_name == 'Rock3':
+				if above_tile_name == 'Soil2' || above_tile_name == 'Rock4' || above_tile_name == 'SoilP2' || above_tile_name == 'RockP4':
 					wait_and_drop_if_still_there(i, j - 1, above_tile_name)
 
 func is_mineable(tile_coords: Vector2i) -> bool:

@@ -16,20 +16,17 @@ config/features=PackedStringArray("4.6", "GL Compatibility")
 run/max_fps=90
 config/icon="res://icon.svg"
 
-[autoload]
-
-G="*uid://vin88n50ijwo"
-
 [debug]
 
 gdscript/warnings/untyped_declaration=1
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
-window/size/mode=4
-window/stretch/mode="canvas_items"
+window/size/viewport_width=960
+window/size/viewport_height=960
+window/stretch/mode="viewport"
+window/stretch/aspect="keep_width"
+window/handheld/orientation=6
 
 [gui]
 

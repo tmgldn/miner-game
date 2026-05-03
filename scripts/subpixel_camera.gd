@@ -29,10 +29,14 @@ func _process(delta: float) -> void:
 		
 		var player_pos = %Player.global_position
 		var desired_pos: Vector2 = Vector2(
-			clamp(player_pos[0], 168.0, 328.0),
-			clamp(player_pos[1] + (
-				-16.0 if has_erupted else 24.0
-			), 92.0, 3118.0)
+			88.5 + (int(player_pos[0]) / 160) * 160,
+			clamp(
+				player_pos[1] + (
+					-16.0 if has_erupted else 8.0
+				),
+				-9999.0, # 88.0,
+				9999.0, # 1832.0
+			)
 		)
 		
 		actual_cam_pos = actual_cam_pos.lerp(desired_pos, delta * lerp_rate)
