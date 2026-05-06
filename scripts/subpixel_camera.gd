@@ -17,30 +17,30 @@ var prev_cam_offset = Vector2(0, 0)
 var has_erupted: bool = false
 
 func _process(delta: float) -> void:
-	if has_initialised:
-		if not has_erupted:
-			has_erupted = not is_inf(Meta.game_state.erupted_time_timestamp)
-			if has_erupted:
-				lerp_rate = 0.0
-		if lerp_rate < 3:
-			lerp_rate += (delta + lerp_rate) * 0.02
-		elif lerp_rate > 3:
-			lerp_rate = 3
-		
-		var player_pos = %Player.global_position
-		var desired_pos: Vector2 = Vector2(
-			88.5 + (int(player_pos[0]) / 160) * 160,
-			clamp(
-				player_pos[1] + (
-					-16.0 if has_erupted else 8.0
-				),
-				-9999.0, # 88.0,
-				9999.0, # 1832.0
-			)
+	if not has_erupted:
+		has_erupted = not is_inf(Meta.game_state.erupted_time_timestamp)
+		if has_erupted:
+			lerp_rate = 0.0
+	if lerp_rate < 3:
+		lerp_rate += (delta + lerp_rate) * 0.02
+	elif lerp_rate > 3:
+		lerp_rate = 3
+	var player_pos: Vector2 = %Player.global_position
+	var desired_pos: Vector2 = Vector2(
+		88.5 + ((int(player_pos[0])-11) / 160) * 160,
+		clamp(
+			player_pos[1] + (
+				-16.0 if has_erupted else 8.0
+			),
+			-9999.0, # 88.0,
+			9999.0, # 1832.0
 		)
-		
+	)
+
+	if has_initialised:
 		actual_cam_pos = actual_cam_pos.lerp(desired_pos, delta * lerp_rate)
 		var cam_offset: Vector2 = actual_cam_pos.round() - actual_cam_pos
+		
 		if shake_state > 0 and shake_state < 8:
 			var extra_offset = Vector2(0, 2)
 			if shake_state == 2:
@@ -67,6 +67,7 @@ func _process(delta: float) -> void:
 		
 		global_position = actual_cam_pos.round()
 	else:
-		actual_cam_pos = %Player.global_position
+		actual_cam_pos = desired_pos
 		global_position = actual_cam_pos.round()
+		#await get_tree().process_frame
 		has_initialised = true

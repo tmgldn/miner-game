@@ -29,6 +29,17 @@ func set_disable_jump_after_delay() -> void:
 	if self.timer_id == new_timer_id:
 		was_on_floor_recently = false
 
+func can_attempt_mine(tile_coords: Vector2i, player_coords: Vector2i) -> bool:
+	if (
+		tile_coords[0] != player_coords[0]
+		and tile_coords[1] != player_coords[1]
+		and %GroundLayer.get_cell_source_id(Vector2i(tile_coords[0], player_coords[1])) == 0
+		and %GroundLayer.get_cell_source_id(Vector2i(player_coords[0], tile_coords[1])) == 0
+	):
+		return false
+	
+	return %Game.is_mining_attemptable(tile_coords)
+
 func can_mine(tile_coords: Vector2i, player_coords: Vector2i) -> bool:
 	if (
 		tile_coords[0] != player_coords[0]
@@ -50,10 +61,10 @@ const MINING_ACTIONS: Array = [
 	["mine_l", Vector2i(-1, 0)],
 	["mine_r", Vector2i(1, 0)],
 	["mine_d", Vector2i(0, 1)],
-	["mine_ul", Vector2i(-1, -1)], # Vector2i(-1, 0)],
-	["mine_ur", Vector2i(1, -1)], # Vector2i(1, 0)],
-	["mine_dl", Vector2i(-1, 1)], # Vector2i(-1, 0)],
-	["mine_dr", Vector2i(1, 1)], # Vector2i(1, 0)],
+	["mine_ul", Vector2i(-1, -1)],
+	["mine_ur", Vector2i(1, -1)],
+	["mine_dl", Vector2i(-1, 1)],
+	["mine_dr", Vector2i(1, 1)],
 ]
 
 const MINING_DIRECTIONS = [
@@ -79,7 +90,7 @@ func add_damage_if_not_immune(damage: int) -> void:
 			heal_timeout = {finished = false, cancel = false}
 			start_healing(heal_timeout)
 			is_immune_to_damage = true
-			await get_tree().create_timer(1.0).timeout
+			await get_tree().create_timer(2.25).timeout
 			is_immune_to_damage = false
 
 var heal_timeout := {finished = true, cancel = false}
@@ -144,24 +155,27 @@ func _physics_process(delta: float) -> void:
 	else:
 		%UIOverlayLayer.clear()
 	
+	var did_just_mine := false
+	
 	if (is_on_floor() and is_minedir_pressed) and not is_mining:
-		var tile_delta = null
+		var mine_success = null
 		 
 		for entry: Array in MINING_ACTIONS:
 			if Input.is_action_pressed(entry[0]):
-				# if can be mined directly
-				if can_mine(player_coords + entry[1], player_coords):
-					tile_delta = entry[1]
-					break
-				# if can be mined indirectly, mine side first
-				if len(entry) > 2 and %Game.is_mineable(player_coords + entry[1]) and can_mine(player_coords + entry[2], player_coords):
-					tile_delta = entry[2]
+				if can_attempt_mine(player_coords + entry[1], player_coords):
+					mine_success = entry
 					break
 		
-		if tile_delta != null:
+		if mine_success:
 			is_mining = true
-			await %Game.mine(player_coords + tile_delta)
+			%PickaxeSprite.play(mine_success[0])
+			await %Game.attempt_mine(player_coords + mine_success[1])
 			is_mining = false
+			did_just_mine = can_mine(player_coords + mine_success[1], player_coords)
+	
+	# this prevents the animation from being cancelled as layers are removed
+	if not (did_just_mine or is_mining):
+		%PickaxeSprite.play("none")
 
 	if is_mining:
 		velocity.x = 0.0
@@ -183,10 +197,28 @@ func _physics_process(delta: float) -> void:
 			%PlayerSprite.flip_h = false
 			%OxygenIndicator.offset.x = 0
 
-		if h_direction == 0:
-			%PlayerSprite.play("idle")
+		if was_on_floor_recently:
+			if h_direction == 0:
+				%PlayerSprite.play("idle")
+			else:
+				if is_in_water:
+					%PlayerSprite.play("swim")
+				else:
+					%PlayerSprite.play("walk")
 		else:
-			%PlayerSprite.play("walk")
+			if velocity.y < 0:
+				if h_direction == 0:
+					%PlayerSprite.play("jump")
+				else:
+					%PlayerSprite.play("jump_walk")
+			else:
+				if is_in_water:
+					%PlayerSprite.play("swim")
+				else:
+					if h_direction == 0:
+						%PlayerSprite.play("fall")
+					else:
+						%PlayerSprite.play("fall_walk")
 
 		var h_velocity_weight: float = delta * (ACCELERATION if h_direction else FRICTION)
 		velocity.x = lerp(velocity.x, h_direction * MAX_SPEED, h_velocity_weight)

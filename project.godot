@@ -107,6 +107,12 @@ pause={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="player"
+2d_physics/layer_9="ground"
+2d_physics/layer_17="fluid"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

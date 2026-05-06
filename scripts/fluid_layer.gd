@@ -28,6 +28,7 @@ const FIRE_RULES = {
 		Vector2i(0, 4): 0.2, # Fire 1
 		Vector2i(0, 5): 0.1, # Fire 2
 		Vector2i(0, 6): 0.0, # Fire 3
+		Vector2i(0, 11): 0.0, # Vent
 	},
 	Vector2i(0, 4): { # Fire 1
 		Vector2i(-1, -1): 0.3, # Empty
@@ -37,6 +38,7 @@ const FIRE_RULES = {
 		Vector2i(0, 4): 0.2, # Fire 1
 		Vector2i(0, 5): 0.1, # Fire 2
 		Vector2i(0, 6): 0.0, # Fire 3
+		Vector2i(0, 11): 0.0, # Vent
 	},
 	Vector2i(0, 5): { # Fire 2
 		Vector2i(-1, -1): 0.3, # Empty
@@ -46,6 +48,7 @@ const FIRE_RULES = {
 		Vector2i(0, 4): 0.2, # Fire 1
 		Vector2i(0, 5): 0.1, # Fire 2
 		Vector2i(0, 6): 0.0, # Fire 3
+		Vector2i(0, 11): 0.0, # Vent
 	},
 	Vector2i(0, 6): { # Fire 3
 		Vector2i(-1, -1): 0.0, # Empty
@@ -55,6 +58,7 @@ const FIRE_RULES = {
 		Vector2i(0, 4): 0.2, # Fire 1
 		Vector2i(0, 5): 0.1, # Fire 2
 		Vector2i(0, 6): 0.0, # Fire 3
+		Vector2i(0, 11): 0.0, # Vent
 	},
 }
 
@@ -67,14 +71,14 @@ func tick_fire() -> void:
 	]:
 		for fire_coords in get_used_cells_by_id(0, atlas_coords):
 			# die
-			if atlas_coords[0] >= 3:
+			if atlas_coords[1] == 6:
 				set_empty(fire_coords)
 			else:
-				set_fire(fire_coords, atlas_coords[0] + 1)
+				set_fire(fire_coords, atlas_coords[1] + 1)
 			# maybe rise
 			for di in range(-1, 2, 1):
 				var other_coords := Vector2i(fire_coords[0] + di, fire_coords[1] - 1)
-				if is_solid(other_coords):
+				if is_solid(other_coords, true):
 					if can_explode(other_coords):
 						%Game.explode(Vector2i(other_coords[0] >> 1, other_coords[1] >> 1))
 					else:
@@ -106,18 +110,10 @@ func tick_fire() -> void:
 							)
 				else:
 					var other_atlas_coords: Vector2i = get_cell_atlas_coords(other_coords)
-					print(
-						FIRE_RULES
-					)
-					print(
-						atlas_coords
-					)
-					print(
-						other_atlas_coords
-					)
 					if randf() <= FIRE_RULES[atlas_coords][other_atlas_coords]:
 						# rise
 						set_fire(other_coords, atlas_coords[0])
+				
 	%Game.on_grid_change()
 
 func tick_fluids() -> void:
@@ -126,8 +122,8 @@ func tick_fluids() -> void:
 		set_water(source_water_cell)
 
 	var water_cells: Array[Vector2i] = get_water_cells()
-	water_cells.append_array(get_water_sources())
-
+	water_cells.sort_custom(sort_fn_desc)
+	
 	for water_cell in water_cells:
 		var below_cell: Vector2i = Vector2i(water_cell[0], water_cell[1] + 1)
 		if can_be_displaced_by_water(below_cell):
@@ -163,7 +159,7 @@ func tick_fluids() -> void:
 		set_gas(source_gas_cell)
 
 	var gas_cells: Array[Vector2i] = get_gas_cells()
-	gas_cells.append_array(get_gas_sources())
+	gas_cells.sort_custom(sort_fn_asc)
 
 	for gas_cell in gas_cells:
 		var above_cell: Vector2i = Vector2i(gas_cell[0], gas_cell[1] - 1)
@@ -199,8 +195,19 @@ func tick_fluids() -> void:
 
 func is_empty(coords: Vector2i) -> bool:
 	return (not is_solid(coords)) and get_cell_atlas_coords(coords) == Vector2i(-1, -1)
-func is_solid(coords: Vector2i) -> bool:
-	return %GroundLayer.get_cell_atlas_coords(Vector2i(coords[0] >> 1, coords[1] >> 1)) != Vector2i(-1, -1)
+func is_solid(coords: Vector2i, true_if_permeable: bool = false) -> bool:
+	var atlas_coords: Vector2i = %GroundLayer.get_cell_atlas_coords(Vector2i(coords[0] >> 1, coords[1] >> 1))
+	if atlas_coords == Vector2i(-1, -1):
+		return false
+	else:
+		if true_if_permeable:
+			return true
+		else:
+			var tile_data: TileData = (%GroundLayer as TileMapLayer).get_cell_tile_data(Vector2i(coords[0] >> 1, coords[1] >> 1))
+			if tile_data:
+				return not tile_data.get_custom_data("is_permeable")
+			else:
+				return true
 func is_water(coords: Vector2i) -> bool:
 	return get_cell_atlas_coords(coords) == Vector2i(0, 1)
 func is_gas(coords: Vector2i) -> bool:
@@ -213,6 +220,8 @@ func is_inactive_fire(coords: Vector2i) -> bool:
 func is_any_fire(coords: Vector2i) -> bool:
 	var atlas_coords = get_cell_atlas_coords(coords)
 	return atlas_coords[0] == 0 and atlas_coords[1] <= 6 and atlas_coords[1] >= 3
+func is_sink(coords: Vector2i) -> bool:
+	return get_cell_atlas_coords(coords) == Vector2i(0, 11)
 func can_burn(coords: Vector2i) -> bool:
 	return is_gas(coords) or is_empty(coords)
 func can_explode(coords: Vector2i) -> bool:
@@ -220,9 +229,9 @@ func can_explode(coords: Vector2i) -> bool:
 	return atlas_coords.name == "Ruby" or atlas_coords.name == "RubyE"
 
 func can_be_displaced_by_water(coords: Vector2i) -> bool:
-	return is_empty(coords) or is_gas(coords) or is_any_fire(coords)
+	return is_empty(coords) or is_gas(coords) or is_any_fire(coords) or is_sink(coords)
 func can_be_displaced_by_gas(coords: Vector2i) -> bool:
-	return is_empty(coords) or is_inactive_fire(coords)
+	return is_empty(coords) or is_inactive_fire(coords) or is_sink(coords)
 func can_be_displaced_by_ground(coords: Vector2i) -> bool:
 	return is_water(coords) or is_gas(coords) or is_any_fire(coords)
 
@@ -236,37 +245,53 @@ func set_gas(coords: Vector2i) -> void:
 func set_water(coords: Vector2i) -> void:
 	set_cell(coords, 0, Vector2i(0, 1))
 func set_fire(coords: Vector2i, level: int = 0) -> void:
-	set_cell(coords, 0, Vector2i(level, 0))
+	set_cell(coords, 0, Vector2i(0, clamp(level + 3, 3, 6)))
 
 func swap_cell(a: Vector2i, b: Vector2i) -> void:
-	if is_in_bounds(a) and is_in_bounds(b):
-		var temp = get_cell_atlas_coords(a)
+	# if a or b is vent, remove other
+	if is_sink(a):
+		set_empty(b)
+	elif is_sink(b):
+		set_empty(a)
+	else:
+		var temp: Vector2i = get_cell_atlas_coords(a)
 		set_cell(a, 0, get_cell_atlas_coords(b))
 		set_cell(b, 0, temp)
-	else:
-		set_empty(a)
-		set_empty(b)
+
+func sort_fn_desc(a: Vector2i, b: Vector2i) -> bool:
+	return a[1] > b[1]
+
+func sort_fn_asc(a: Vector2i, b: Vector2i) -> bool:
+	return a[1] < b[1]
 
 # this maps 16x16 grid tile locations for sapphires to their bottom two 8x8 subtiles
 func get_water_sources() -> Array[Vector2i]:
 	var output_locs: Array[Vector2i] = []
-	for loc in %GroundOverlayLayer.get_used_cells_by_id(0, Vector2i(0, 3)):
-		output_locs.append(Vector2i(loc[0] * 2, loc[1] * 2 + 1))
-		output_locs.append(Vector2i(loc[0] * 2 + 1, loc[1] * 2 + 1))
+	for loc_arr: Array[Vector2i] in [
+		%GroundOverlayLayer.get_used_cells_by_id(0, Vector2i(0, 3)),
+		%GroundOverlayLayer.get_used_cells_by_id(0, Vector2i(1, 3))
+	]:
+		for loc in loc_arr:
+			output_locs.append(Vector2i(loc[0] * 2, loc[1] * 2 + 1))
+			output_locs.append(Vector2i(loc[0] * 2 + 1, loc[1] * 2 + 1))
 	return output_locs
 
 # this maps 16x16 grid tile locations for emeralds to their top two 8x8 subtiles
 func get_gas_sources() -> Array[Vector2i]:
 	var output_locs: Array[Vector2i] = []
-	for loc in %GroundOverlayLayer.get_used_cells_by_id(0, Vector2i(0, 4)):
-		output_locs.append(Vector2i(loc[0] * 2, loc[1] * 2))
-		output_locs.append(Vector2i(loc[0] * 2 + 1, loc[1] * 2))
+	for loc_arr: Array[Vector2i] in [
+		%GroundOverlayLayer.get_used_cells_by_id(0, Vector2i(0, 4)),
+		%GroundOverlayLayer.get_used_cells_by_id(0, Vector2i(1, 4))
+	]:
+		for loc in loc_arr:
+			output_locs.append(Vector2i(loc[0] * 2, loc[1] * 2))
+			output_locs.append(Vector2i(loc[0] * 2 + 1, loc[1] * 2))
 	return output_locs
 
 func get_water_cells() -> Array[Vector2i]:
 	var water_cells: Array[Vector2i] = get_used_cells_by_id(0, Vector2i(0, 1))
-	water_cells.reverse()
 	return water_cells
 	
 func get_gas_cells() -> Array[Vector2i]:
-	return get_used_cells_by_id(0, Vector2i(0, 2))
+	var gas_cells: Array[Vector2i] = get_used_cells_by_id(0, Vector2i(0, 2))
+	return gas_cells

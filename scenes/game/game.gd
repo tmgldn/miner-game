@@ -38,7 +38,6 @@ func add_points(points: int) -> void:
 	Meta().game_state.score += points
 	Meta().game_state.eruption_time_timestamp += SECONDS_PER_ORE if points > 0 else 0.0
 
-
 var PENDING_EXPLOSIONS: Dictionary = {}
 
 func explode(coords: Vector2i) -> void:
@@ -58,19 +57,28 @@ func explode(coords: Vector2i) -> void:
 			elif %FluidLayer.can_explode(sub_coords):
 				explode(Vector2i(sub_coords[0] >> 1, sub_coords[1] >> 1))
 
-func mine(coords: Vector2i) -> void:
+func attempt_mine(coords: Vector2i) -> void:
 	var tile_data = tile_coords_to_data(coords)
 	var prev_index = tile_data.gi.index
 	var next = tile_data.gi.data.t
 	var next_next = TileInfo.TILE_NAME_LOOKUP[next].g.t
 
+	%GroundParticleEffects.play("none")
+	%GroundParticleEffects.position = coords * 16
+	
 	if tile_data.oi.name == 'RubyE' and next == 'Empty':
 		# activate explosion
 		explode(coords)
-	elif tile_data.oi.name == 'Ruby' and (next == 'Empty' or next_next == 'Empty'):
-		GroundOverlayLayer.set_cell(coords, 0, TileInfo.OVERLAYS['RubyE'].c[0])
+	else:
+		if tile_data.oi.name == 'Ruby' and (next == 'Empty' or next_next == 'Empty'):
+			GroundOverlayLayer.set_cell(coords, 0, TileInfo.OVERLAYS['RubyE'].c[0])
+		# can mine
+		if is_mineable(coords):
+			%GroundParticleEffects.play("mining")
 
 	await get_tree().create_timer(tile_data.gi.data.s).timeout
+	%GroundParticleEffects.play("none")
+
 	if next == 'Empty':
 		GroundLayer.set_cell(coords, -1)
 		GroundOverlayLayer.set_cell(coords, -1)
@@ -103,7 +111,7 @@ func wait_and_drop_if_still_there(i: int, j: int, was: String):
 		GroundLayer.set_cell(above_coords, 0, next_coord)
 
 		while true:
-			await get_tree().create_timer(1.0).timeout
+			await get_tree().create_timer(0.2).timeout
 
 			above = tile_coords_to_data(above_coords)
 			above_tile_name = above.gi.name
@@ -194,9 +202,6 @@ func on_grid_change():
 				wait_and_explode(ref)
 				PENDING_EXPLOSIONS.set(coords, ref)
 
-			if tile_data.gi == null:
-				print(tile_data, coords)
-
 			if tile_data.gi.name == 'Empty':
 				var above_data = tile_coords_to_data(Vector2i(i, j - 1))
 				var above_tile_name = above_data.gi.name
@@ -205,3 +210,10 @@ func on_grid_change():
 
 func is_mineable(tile_coords: Vector2i) -> bool:
 	return tile_coords_to_data(tile_coords).gi.name != tile_coords_to_data(tile_coords).gi.data.t
+
+func is_mining_attemptable(tile_coords: Vector2i) -> bool:
+	return (
+		is_mineable(tile_coords)
+		or tile_coords_to_data(tile_coords).gi.name == "Boundary"
+		or tile_coords_to_data(tile_coords).gi.name == "BoundaryP"
+	)
