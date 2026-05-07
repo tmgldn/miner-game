@@ -21,6 +21,7 @@
 [ext_resource type="Script" uid="uid://bsrwxpjoeqwcy" path="res://scenes/game/help_message.gd" id="19_10c2w"]
 [ext_resource type="PackedScene" uid="uid://1snxwdcomi6v" path="res://scenes/game/player_detect_box.tscn" id="20_pg2xm"]
 [ext_resource type="PackedScene" uid="uid://djy0v6iu10gwq" path="res://scenes/game/door_detect_box.tscn" id="21_gc57s"]
+[ext_resource type="Script" uid="uid://cheywm2v1gv0e" path="res://scenes/game/player_detect_box.gd" id="22_8b66f"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vaxfo"]
 texture = ExtResource("4_5jirj")
@@ -1191,6 +1192,9 @@ line_spacing = 0.0
 font = ExtResource("14_ftsea")
 font_size = 8
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3jaai"]
+size = Vector2(96, 33)
+
 [node name="GameRoot" type="Node2D" unique_id=1298478925]
 texture_filter = 1
 
@@ -1303,7 +1307,7 @@ script = ExtResource("1_fc0e3")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=684315548]
 unique_name_in_owner = true
-position = Vector2(1306, -344)
+position = Vector2(137, 22)
 script = ExtResource("4_eow3j")
 
 [node name="PickaxeSprite" type="AnimatedSprite2D" parent="Player" unique_id=1372966549]
@@ -1381,8 +1385,45 @@ label_settings = SubResource("LabelSettings_otnwt")
 [node name="HelpTextBoxes" type="Node2D" parent="." unique_id=10611761]
 
 [node name="PlayerDetectBox" parent="HelpTextBoxes" unique_id=115156341 instance=ExtResource("20_pg2xm")]
-position = Vector2(32, 16)
+position = Vector2(48, 24)
+message = "[left] [right] to move, [up] to jump"
 
 [node name="PlayerDetectBox2" parent="HelpTextBoxes" unique_id=1031871640 instance=ExtResource("20_pg2xm")]
-position = Vector2(96, -64)
-message = "press [d] to mine to the right hand side"
+position = Vector2(95, -53)
+message = "press [D] to mine to the right hand side"
+
+[node name="PlayerDetectBox3" parent="HelpTextBoxes" unique_id=452014537 instance=ExtResource("20_pg2xm")]
+position = Vector2(107, -56)
+message = "press [W] to mine to up"
+
+[node name="PlayerDetectBox4" parent="HelpTextBoxes" unique_id=1875561156 instance=ExtResource("20_pg2xm")]
+position = Vector2(94, -120)
+message = "rocks when almost fully mined can fall - make sure not to be under them!"
+
+[node name="PlayerDetectBox5" parent="HelpTextBoxes" unique_id=1815430843 instance=ExtResource("20_pg2xm")]
+position = Vector2(106, -184)
+message = "this silver ore can be reached and mined across the gap - but you must balance on the edge"
+
+[node name="PlayerDetectBox6" parent="HelpTextBoxes" unique_id=1470982612 instance=ExtResource("20_pg2xm")]
+position = Vector2(143, -13)
+message = "press [Q]"
+
+[node name="PlayerDetectBox7" parent="HelpTextBoxes" unique_id=2039246864 instance=ExtResource("20_pg2xm")]
+position = Vector2(117, 20)
+message = "the keys for mining match their direction from [S] on the keyboard                           QWE                                      A_D                                          ZXC"
+
+[node name="PlayerDetectBox8" parent="HelpTextBoxes" unique_id=1087372514 instance=ExtResource("20_pg2xm")]
+position = Vector2(160, 24)
+message = "door                                needs                              diamond"
+
+[node name="PlayerDetectBox9" type="Area2D" parent="HelpTextBoxes" unique_id=554984734]
+position = Vector2(115, 53)
+script = ExtResource("22_8b66f")
+message = "from here - you're on your own. use your intuition to find your way through the chambers"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HelpTextBoxes/PlayerDetectBox9" unique_id=1295756617]
+position = Vector2(-3, 11.5)
+shape = SubResource("RectangleShape2D_3jaai")
+
+[connection signal="body_entered" from="HelpTextBoxes/PlayerDetectBox9" to="HelpTextBoxes/PlayerDetectBox9" method="_on_body_entered"]
+[connection signal="body_exited" from="HelpTextBoxes/PlayerDetectBox9" to="HelpTextBoxes/PlayerDetectBox9" method="_on_body_exited"]

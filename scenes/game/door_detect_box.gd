@@ -45,6 +45,7 @@ func _physics_process(delta: float) -> void:
 			Player.fix_position = global_position + Vector2(-3, 0)
 		DoorState.DoorClosed:
 			DoorSprite.play('door_closed')
+			Player.respawn_position = global_position + Vector2(6, 0)
 			Player.fix_position = null
 			#print('Remove lava from previous levels')
 

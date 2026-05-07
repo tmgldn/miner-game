@@ -86,10 +86,16 @@ const MINING_DIRECTIONS = [
 @onready var PickaxeSprite = %PickaxeSprite
 @onready var PlayerSprite = %PlayerSprite
 @onready var OxygenIndicator = %OxygenIndicator
+@onready var Messages := %Messages
 @onready var Meta = get_node("/root/Main/Meta")
 
 func respawn() -> void:
-	print('respawn')
+	position = respawn_position
+	health = 3
+	oxygen = 8
+	Messages.set_help_message(
+		"...welcome back"
+	)
 
 func damage(dmg: int) -> void:
 	if secs_since_damage >= DAMAGE_IMMUNITY_TIME:
@@ -100,10 +106,10 @@ func damage(dmg: int) -> void:
 			respawn()
 
 var fix_position = null
-var has_escaped := false
+var respawn_position := Vector2(21, 24)
 
 func _physics_process(delta: float) -> void:
-	if has_escaped or health <= 0:
+	if health <= 0:
 		return
 
 	var fluid_coords_top: Vector2i = FluidLayer.local_to_map(global_position)
