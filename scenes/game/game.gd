@@ -76,6 +76,7 @@ func add_ore(ore: String, coords: Vector2i) -> void:
 		
 		if ore == 'Diamond':
 			if coords[0] < 10:
+				Messages.set_help_message('that sounded ominous... time to get our of here!', 3)
 				start_eruption(0, Vector2i(2, 47))
 			elif coords[0] < 30:
 				start_eruption(1, Vector2i(42, 63))
@@ -86,7 +87,7 @@ func add_ore(ore: String, coords: Vector2i) -> void:
 			elif coords[0] < 90:
 				start_eruption(4, Vector2i(162, -25))
 			else:
-				print('you win! back to start screen')
+				Messages.set_help_message('You win!')
 
 var PENDING_EXPLOSIONS: Dictionary = {}
 
