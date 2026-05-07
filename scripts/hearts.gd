@@ -18,4 +18,4 @@ func _physics_process(delta: float) -> void:
 			$Heart2.texture.region = Rect2(8, 8, 8, 8) if health >= 2 else Rect2(0, 8, 8, 8)
 			$Heart3.texture.region = Rect2(8, 8, 8, 8) if health >= 3 else Rect2(0, 8, 8, 8)
 		else:
-			visible = false
+			visible = health != 3

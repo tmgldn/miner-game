@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://1snxwdcomi6v"]
+
+[ext_resource type="Script" uid="uid://cheywm2v1gv0e" path="res://scenes/game/player_detect_box.gd" id="1_e8ww7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_10c2w"]
+size = Vector2(32, 32)
+
+[node name="PlayerDetectBox" type="Area2D" unique_id=115156341]
+script = ExtResource("1_e8ww7")
+message = "Help me"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1295756617]
+shape = SubResource("RectangleShape2D_10c2w")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

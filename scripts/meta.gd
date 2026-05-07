@@ -3,7 +3,6 @@ extends Control
 enum MetaState {
 	StartScreen,
 	InGame,
-	InGamePaused,
 	EndScreen
 }
 
@@ -14,10 +13,11 @@ const INITIAL_GAME_STATE = {
 }
 
 var last_meta_state: MetaState = MetaState.EndScreen
+var is_paused: bool = false
 var meta_state: MetaState = MetaState.StartScreen
 var game_state = INITIAL_GAME_STATE.duplicate()
 var game_scene = preload("res://scenes/game/game.tscn")
-var pause_time: float = -1
+var pause_time: float = 0
 
 func _process(delta: float) -> void:
 	if meta_state != last_meta_state:
@@ -26,7 +26,6 @@ func _process(delta: float) -> void:
 			%EndScreen.visible = false
 			%BackgroundMusic.stream = preload("res://music/01 The main reason we are here.mp3")
 			%BackgroundMusic.play()
-			%BackgroundMusic.playback_type
 			
 		elif meta_state == MetaState.EndScreen:
 			%StartScreen.visible = false
@@ -36,7 +35,7 @@ func _process(delta: float) -> void:
 		else:
 			%StartScreen.visible = false
 			%EndScreen.visible = false
-			%PauseMenu.visible = meta_state == MetaState.InGamePaused
+			%PauseMenu.visible = is_paused
 			%BackgroundMusic.stream = preload("res://music/04 Walk in the forest.mp3")
 			%BackgroundMusic.play()
 	
@@ -44,15 +43,15 @@ func _process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed('pause'):
 		if meta_state == MetaState.InGame:
-			get_tree().paused = true
-			meta_state = MetaState.InGamePaused
-			pause_time = Time.get_unix_time_from_system()
-		elif meta_state == MetaState.InGamePaused:
-			var pause_delta: float = Time.get_unix_time_from_system() - pause_time
-			game_state.eruption_time_timestamp += pause_delta
-			game_state.erupted_time_timestamp += pause_delta
-			get_tree().paused = false
-			meta_state = MetaState.InGame
+			if pause_time:
+				var pause_delta: float = Time.get_unix_time_from_system() - pause_time
+				game_state.eruption_time_timestamp += pause_delta
+				game_state.erupted_time_timestamp += pause_delta
+				get_tree().paused = false
+				pause_time = 0
+			else:
+				get_tree().paused = true
+				pause_time = Time.get_unix_time_from_system()
 	
 	if (meta_state == MetaState.StartScreen or meta_state == MetaState.EndScreen) and Input.is_action_just_pressed('ui_accept'):
 		for child in %SubViewport.get_children():

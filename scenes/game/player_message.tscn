@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://cpf0pq86weir1"]
+
+[ext_resource type="FontFile" uid="uid://drl2n5egv160s" path="res://fonts/Tiny5.ttf" id="1_3e5j6"]
+[ext_resource type="Script" uid="uid://dxyjjmjjb45vh" path="res://scripts/player_message.gd" id="2_qlwql"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_qlwql"]
+line_spacing = 0.0
+font = ExtResource("1_3e5j6")
+font_size = 8
+
+[node name="PlayerMessage" type="Label" unique_id=713266535]
+offset_right = 1.0
+offset_bottom = 23.0
+label_settings = SubResource("LabelSettings_qlwql")
+horizontal_alignment = 1
+script = ExtResource("2_qlwql")

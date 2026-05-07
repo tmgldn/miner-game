@@ -1,60 +1,62 @@
 extends CharacterBody2D
+class_name Player
 
-const SINK_VELOCITY: float = 70.0
-const JUMP_VELOCITY: float = -150.0
-var is_jumping := false
-var was_on_floor_recently := false
-var was_in_water_recently := false
-var was_in_gas_recently := false
+@export var SINK_VELOCITY := 70.0
+@export var MAX_FALL_VELOCITY := 200.0
+@export var JUMP_VELOCITY := -150.0
 
-# 70.0 but becomes 90.0 during eruption
-const LAND_MAX_SPEED: float = 70.0
-const LAND_ACCELERATION: float = 20.0
-const LAND_FRICTION: float = 20.0
+@export var LAND_MAX_SPEED := 70.0
+@export var LAND_ACCELERATION := 20.0
+@export var LAND_FRICTION := 20.0
 
-const WATER_MAX_SPEED: float = 50.0
-const WATER_ACCELERATION: float = 15.0
-const WATER_FRICTION: float = 30.0
+@export var WATER_MAX_SPEED := 50.0
+@export var WATER_ACCELERATION := 15.0
+@export var WATER_FRICTION := 30.0
 
-const OXYGEN_DRAIN_TIME: float = 0.5
-const OXYGEN_RECOVER_TIME: float = 0.01
+@export var OXYGEN_DRAIN_TIME := 0.75
+@export var WATER_BUFFER := 0.1
+@export var GAS_BUFFER := 0.1
+@export var FIRE_BUFFER := 0.01
+@export var LAVA_BUFFER := 0.01
+@export var COYOTE_TIME := 0.08
+@export var JUMP_BUFFER := 0.3
+@export var DAMAGE_IMMUNITY_TIME := 1.5
 
-var timer_id := 0
-
-@onready var Meta := get_node("/root/Main/Meta")
-
-func set_disable_jump_after_delay() -> void:
-	var new_timer_id := ++self.timer_id
-	await get_tree().create_timer(0.1).timeout
-	if self.timer_id == new_timer_id:
-		was_on_floor_recently = false
+var secs_since_on_ground := 999.0
+var secs_since_jump_pressed := 999.0
+var secs_since_in_water := 999.0
+var secs_since_in_gas := 999.0
+var secs_since_in_fire := 999.0
+var secs_since_in_lava := 999.0
+var secs_since_health_change := 999.0
+var secs_since_damage := 999.0
+var secs_since_oxygen_decrease := 999.0
 
 func can_attempt_mine(tile_coords: Vector2i, player_coords: Vector2i) -> bool:
 	if (
 		tile_coords[0] != player_coords[0]
 		and tile_coords[1] != player_coords[1]
-		and %GroundLayer.get_cell_source_id(Vector2i(tile_coords[0], player_coords[1])) == 0
-		and %GroundLayer.get_cell_source_id(Vector2i(player_coords[0], tile_coords[1])) == 0
+		and GroundLayer.get_cell_source_id(Vector2i(tile_coords[0], player_coords[1])) == 0
+		and GroundLayer.get_cell_source_id(Vector2i(player_coords[0], tile_coords[1])) == 0
 	):
 		return false
 	
-	return %Game.is_mining_attemptable(tile_coords)
+	return Game.is_mining_attemptable(tile_coords)
 
 func can_mine(tile_coords: Vector2i, player_coords: Vector2i) -> bool:
 	if (
 		tile_coords[0] != player_coords[0]
 		and tile_coords[1] != player_coords[1]
-		and %GroundLayer.get_cell_source_id(Vector2i(tile_coords[0], player_coords[1])) == 0
-		and %GroundLayer.get_cell_source_id(Vector2i(player_coords[0], tile_coords[1])) == 0
+		and GroundLayer.get_cell_source_id(Vector2i(tile_coords[0], player_coords[1])) == 0
+		and GroundLayer.get_cell_source_id(Vector2i(player_coords[0], tile_coords[1])) == 0
 	):
 		return false
 	
-	return %Game.is_mineable(tile_coords)
+	return Game.is_mineable(tile_coords)
 
 var is_mining := false
 var health := 3
 var oxygen := 8
-var is_in_lava := false
 
 const MINING_ACTIONS: Array = [
 	["mine_u", Vector2i(0, -1)],
@@ -78,74 +80,88 @@ const MINING_DIRECTIONS = [
 	[Vector2i(7, 0), Vector2i(-1, 1)],
 ]
 
-var is_immune_to_damage := false
+@onready var FluidLayer = %FluidLayer
+@onready var GroundLayer = %GroundLayer
+@onready var Game = %Game
+@onready var PickaxeSprite = %PickaxeSprite
+@onready var PlayerSprite = %PlayerSprite
+@onready var OxygenIndicator = %OxygenIndicator
+@onready var Meta = get_node("/root/Main/Meta")
 
-func add_damage_if_not_immune(damage: int) -> void:
-	if not is_immune_to_damage:
-		health = max(0, health - damage)
+func damage(dmg: int) -> void:
+	if secs_since_damage >= DAMAGE_IMMUNITY_TIME:
+		health = max(0, health - dmg)
+		secs_since_damage = 0
+		secs_since_health_change = 0
 		if health <= 0:
 			Meta.die()
-		else:
-			heal_timeout.cancel = true
-			heal_timeout = {finished = false, cancel = false}
-			start_healing(heal_timeout)
-			is_immune_to_damage = true
-			await get_tree().create_timer(2.25).timeout
-			is_immune_to_damage = false
 
-var heal_timeout := {finished = true, cancel = false}
-func start_healing(timeout_obj: Dictionary) -> void:
-	await get_tree().create_timer(5.0).timeout
-	if not timeout_obj.cancel:
-		health += 1
-		if health < 3:
-			heal_timeout = {finished = false, cancel = false}
-			start_healing(heal_timeout)
-
+var fix_position = null
 var has_escaped := false
-var time_since_last_oxygen_change := 0.0
 
 func _physics_process(delta: float) -> void:
 	if has_escaped or health <= 0:
 		return
 
-	var is_in_water_: bool = %FluidLayer.get_cell_atlas_coords(%FluidLayer.local_to_map(global_position)) == Vector2i(0, 1)
-	var is_in_water: bool = is_in_water_ or was_in_water_recently
-	var is_in_gas_: bool = %FluidLayer.get_cell_atlas_coords(%FluidLayer.local_to_map(global_position)) == Vector2i(0, 2)
-	var is_in_gas: bool = is_in_gas_ or was_in_gas_recently
-	var can_breathe: bool = not (is_in_water or is_in_gas)
-
-	var MAX_SPEED: float = WATER_MAX_SPEED if is_in_water else LAND_MAX_SPEED
-	var ACCELERATION: float = WATER_ACCELERATION if is_in_water else LAND_ACCELERATION
-	var FRICTION: float = WATER_FRICTION if is_in_water else LAND_FRICTION
-	var GRAVITY: Vector2 = get_gravity() * (0.5 if is_in_water else 1.0)
+	var fluid_coords_top: Vector2i = FluidLayer.local_to_map(global_position)
+	if FluidLayer.is_water(fluid_coords_top):
+		secs_since_in_water = 0
+	elif FluidLayer.is_gas(fluid_coords_top):
+		secs_since_in_gas = 0
 	
-	var can_jump := is_on_floor() or (was_on_floor_recently and not is_jumping)
-	
-	if is_in_lava:
-		add_damage_if_not_immune(1)
-		velocity.y = JUMP_VELOCITY * 1.25
-		is_jumping = true
-		was_on_floor_recently = false
-	
-	if health < 3 and heal_timeout.finished:
-		heal_timeout = {finished = false, cancel = false}
-		start_healing(heal_timeout)
+	var fluid_coords_bottom: Vector2i = FluidLayer.local_to_map(global_position + Vector2(0, 6))
+	if FluidLayer.is_fire(fluid_coords_top) or FluidLayer.is_fire(fluid_coords_bottom):
+		secs_since_in_fire = 0
+	elif FluidLayer.is_lava(fluid_coords_bottom):
+		secs_since_in_lava = 0
 	
 	if is_on_floor():
-		is_jumping = false
-		was_on_floor_recently = true
-	else:
-		if was_on_floor_recently:
-			set_disable_jump_after_delay()
-		var gravity_mod: float = 1.0 if velocity.y >= 0 else (1.5 - (
-			velocity.y / JUMP_VELOCITY
-		))
-		velocity += GRAVITY * gravity_mod * delta
+		secs_since_on_ground = 0
+	if Input.is_action_just_pressed("up"):
+		secs_since_jump_pressed = 0
+
+	var is_player_in_water := secs_since_in_water < WATER_BUFFER
+	var is_player_in_gas := secs_since_in_gas < GAS_BUFFER
+	var is_player_in_fire := secs_since_in_fire < FIRE_BUFFER
+	var is_player_in_lava := secs_since_in_lava < LAVA_BUFFER
+	var is_player_on_ground := secs_since_on_ground < COYOTE_TIME
+	var has_player_tried_to_jump := secs_since_jump_pressed < JUMP_BUFFER
+	var can_breathe: bool = not (is_player_in_water or is_player_in_gas)
+
+	var MAX_SPEED: float = WATER_MAX_SPEED if is_player_in_water else LAND_MAX_SPEED
+	var ACCELERATION: float = WATER_ACCELERATION if is_player_in_water else LAND_ACCELERATION
+	var FRICTION: float = WATER_FRICTION if is_player_in_water else LAND_FRICTION
+	var GRAVITY: Vector2 = get_gravity() * (0.5 if is_player_in_water else 1.0)
+	
+	if is_player_in_fire or is_player_in_lava:
+		damage(2)
+		if is_player_in_lava:
+			velocity.y = JUMP_VELOCITY * 1.25
+
+	if can_breathe:
+		oxygen = 8
+	elif secs_since_oxygen_decrease > OXYGEN_DRAIN_TIME:
+		if oxygen <= 0:
+			damage(1)
+		else:
+			oxygen = max(0, oxygen - 1)
+		secs_since_oxygen_decrease = 0.0
+	OxygenIndicator.texture.region.position.x = 8.0 * oxygen
+
+	if health < 3:
+		if secs_since_health_change >= 5.0 and can_breathe:
+			health += 1
+			secs_since_health_change = 0
+
+	# apply gravity
+	var gravity_mod: float = 1.0 if velocity.y >= 0 else (1.5 - (
+		velocity.y / JUMP_VELOCITY
+	))
+	velocity += GRAVITY * gravity_mod * delta
 
 	var is_minedir_pressed: bool = MINING_ACTIONS.any(func(pair: Array) -> bool: return Input.is_action_pressed(pair[0]))
 	
-	var player_coords: Vector2i = %GroundLayer.local_to_map(global_position)
+	var player_coords: Vector2i = GroundLayer.local_to_map(global_position)
 	if Input.is_action_pressed("show_mineable") and (not is_mining) and is_on_floor():
 		%UIOverlayLayer.clear()
 		for pair: Array in MINING_DIRECTIONS:
@@ -168,90 +184,79 @@ func _physics_process(delta: float) -> void:
 		
 		if mine_success:
 			is_mining = true
-			%PickaxeSprite.play(mine_success[0])
-			await %Game.attempt_mine(player_coords + mine_success[1])
+			PickaxeSprite.play(mine_success[0])
+			await Game.attempt_mine(player_coords + mine_success[1])
 			is_mining = false
 			did_just_mine = can_mine(player_coords + mine_success[1], player_coords)
 	
 	# this prevents the animation from being cancelled as layers are removed
 	if not (did_just_mine or is_mining):
-		%PickaxeSprite.play("none")
+		PickaxeSprite.play("none")
 
 	if is_mining:
 		velocity.x = 0.0
 		velocity.y = 0.0
+		PlayerSprite.play("interact")
 	else:
 		# up - down
-		if can_jump and Input.is_action_just_pressed("up"):
+		if has_player_tried_to_jump and is_player_on_ground:
 			velocity.y = JUMP_VELOCITY
-			is_jumping = true
-			was_on_floor_recently = false
+			secs_since_jump_pressed = 9999.0
+			secs_since_on_ground = 9999.0
 
 		# left - right
 		var h_direction := Input.get_axis("left", "right")
 		if h_direction < 0:
-			%PlayerSprite.flip_h = true
-			%OxygenIndicator.offset.x = 12
-			
+			PlayerSprite.flip_h = true
+			OxygenIndicator.offset.x = 12
 		elif h_direction > 0:
-			%PlayerSprite.flip_h = false
-			%OxygenIndicator.offset.x = 0
+			PlayerSprite.flip_h = false
+			OxygenIndicator.offset.x = 0
 
-		if was_on_floor_recently:
+		if is_player_on_ground:
 			if h_direction == 0:
-				%PlayerSprite.play("idle")
+				PlayerSprite.play("idle")
 			else:
-				if is_in_water:
-					%PlayerSprite.play("swim")
+				if is_player_in_water:
+					PlayerSprite.play("swim")
 				else:
-					%PlayerSprite.play("walk")
+					PlayerSprite.play("walk")
 		else:
 			if velocity.y < 0:
 				if h_direction == 0:
-					%PlayerSprite.play("jump")
+					PlayerSprite.play("jump")
 				else:
-					%PlayerSprite.play("jump_walk")
+					PlayerSprite.play("jump_walk")
 			else:
-				if is_in_water:
-					%PlayerSprite.play("swim")
-				else:
+				if is_player_in_water:
+					PlayerSprite.play("swim")
+				elif velocity.y >= MAX_FALL_VELOCITY:
 					if h_direction == 0:
-						%PlayerSprite.play("fall")
+						PlayerSprite.play("fall")
 					else:
-						%PlayerSprite.play("fall_walk")
+						PlayerSprite.play("fall_walk")
+				else:
+					PlayerSprite.play("walk")
 
 		var h_velocity_weight: float = delta * (ACCELERATION if h_direction else FRICTION)
 		velocity.x = lerp(velocity.x, h_direction * MAX_SPEED, h_velocity_weight)
-		if is_in_water:
+		if is_player_in_water:
 			velocity.y = min(velocity.y, SINK_VELOCITY)
+	
+	velocity.y = min(velocity.y, MAX_FALL_VELOCITY)
 
-	time_since_last_oxygen_change += delta
-	if time_since_last_oxygen_change >= (OXYGEN_RECOVER_TIME if can_breathe else OXYGEN_DRAIN_TIME):
-		update_oxygen(can_breathe)
-		time_since_last_oxygen_change = 0.0
+	if fix_position:
+		position = fix_position
+		velocity = Vector2(0, 0)
 
-	was_in_water_recently = is_in_water_
-	was_in_gas_recently = is_in_gas_
-
+	# finish cycle
 	move_and_slide()
-
-func update_oxygen(can_breathe: bool) -> void:
-	var next_oxygen: int = oxygen + (1 if can_breathe else -1)
-	if next_oxygen < 0:
-		add_damage_if_not_immune(1)
-	oxygen = clamp(next_oxygen, 0, 8)
-	%OxygenIndicator.texture.region.position.x = 8.0 * oxygen
-
-func _on_lava_body_entered(body: Node2D) -> void:
-	if body == $".":
-		is_in_lava = true
-
-func _on_lava_body_exited(body: Node2D) -> void:
-	if body == $".":
-		is_in_lava = false
-
-func _on_escape_rope_body_entered(_body: Node2D) -> void:
-	if not is_inf(Meta.game_state.erupted_time_timestamp):
-		has_escaped = true
-		global_position = Vector2(248, -25)
-		Meta.escape()
+	secs_since_on_ground += delta
+	secs_since_jump_pressed += delta
+	secs_since_in_water += delta
+	secs_since_in_gas += delta
+	secs_since_in_fire += delta
+	secs_since_in_lava += delta
+	secs_since_health_change += delta
+	secs_since_damage += delta
+	secs_since_oxygen_decrease += delta

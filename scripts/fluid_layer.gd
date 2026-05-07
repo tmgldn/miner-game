@@ -1,6 +1,9 @@
 extends TileMapLayer
 
-@onready var TileInfo: Node = %TileInfo
+@onready var TileInfo := %TileInfo
+@onready var Game := %Game
+@onready var GroundLayer := %GroundLayer
+@onready var GroundOverlayLayer := %GroundOverlayLayer
 
 const TIME_PER_CYCLE: float = 0.075
 const CYCLES_PER_FLUID: int = 4
@@ -63,6 +66,8 @@ const FIRE_RULES = {
 }
 
 func tick_fire() -> void:
+	var has_tile_changed := false
+	
 	for atlas_coords in [
 		Vector2i(0, 6),
 		Vector2i(0, 5),
@@ -108,13 +113,14 @@ func tick_fire() -> void:
 									)
 								]
 							)
+							has_tile_changed = true
 				else:
 					var other_atlas_coords: Vector2i = get_cell_atlas_coords(other_coords)
 					if randf() <= FIRE_RULES[atlas_coords][other_atlas_coords]:
 						# rise
 						set_fire(other_coords, atlas_coords[0])
-				
-	%Game.on_grid_change()
+	if has_tile_changed:
+		%Game.on_grid_change()
 
 func tick_fluids() -> void:
 	# water
@@ -212,31 +218,26 @@ func is_water(coords: Vector2i) -> bool:
 	return get_cell_atlas_coords(coords) == Vector2i(0, 1)
 func is_gas(coords: Vector2i) -> bool:
 	return get_cell_atlas_coords(coords) == Vector2i(0, 2)
-func is_active_fire(coords: Vector2i) -> bool:
-	return get_cell_atlas_coords(coords) == Vector2i(0, 3)
-func is_inactive_fire(coords: Vector2i) -> bool:
-	var atlas_coords = get_cell_atlas_coords(coords)
-	return atlas_coords[0] == 0 and atlas_coords[1] <= 6 and atlas_coords[1] >= 4
-func is_any_fire(coords: Vector2i) -> bool:
+func is_fire(coords: Vector2i) -> bool:
 	var atlas_coords = get_cell_atlas_coords(coords)
 	return atlas_coords[0] == 0 and atlas_coords[1] <= 6 and atlas_coords[1] >= 3
+func is_lava(coords: Vector2i) -> bool:
+	var atlas_coords = get_cell_atlas_coords(coords)
+	return atlas_coords[0] == 0 and atlas_coords[1] <= 10 and atlas_coords[1] >= 8
 func is_sink(coords: Vector2i) -> bool:
 	return get_cell_atlas_coords(coords) == Vector2i(0, 11)
 func can_burn(coords: Vector2i) -> bool:
 	return is_gas(coords) or is_empty(coords)
 func can_explode(coords: Vector2i) -> bool:
 	var atlas_coords = TileInfo.OVERLAY_LOOKUP[%GroundOverlayLayer.get_cell_atlas_coords(Vector2i(coords[0] >> 1, coords[1] >> 1))]
-	return atlas_coords.name == "Ruby" or atlas_coords.name == "RubyE"
+	return atlas_coords.name == "Ruby" or atlas_coords.name == "RubyE" or atlas_coords.name == "Emerald"
 
 func can_be_displaced_by_water(coords: Vector2i) -> bool:
-	return is_empty(coords) or is_gas(coords) or is_any_fire(coords) or is_sink(coords)
+	return is_empty(coords) or is_gas(coords) or is_fire(coords) or is_sink(coords)
 func can_be_displaced_by_gas(coords: Vector2i) -> bool:
-	return is_empty(coords) or is_inactive_fire(coords) or is_sink(coords)
+	return is_empty(coords) or is_sink(coords)
 func can_be_displaced_by_ground(coords: Vector2i) -> bool:
-	return is_water(coords) or is_gas(coords) or is_any_fire(coords)
-
-func is_in_bounds(coords: Vector2i):
-	return coords[0] >= 0 and coords[0] <= 61 and coords[1] >= 0
+	return is_water(coords) or is_gas(coords) or is_fire(coords)
 
 func set_empty(coords: Vector2i) -> void: # does not empty ground tile
 	set_cell(coords, -1)

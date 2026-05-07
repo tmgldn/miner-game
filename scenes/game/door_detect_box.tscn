@@ -1,0 +1,227 @@
+[gd_scene format=3 uid="uid://djy0v6iu10gwq"]
+
+[ext_resource type="Script" uid="uid://dj3q6774qcxoo" path="res://scenes/game/door_detect_box.gd" id="1_1ygrd"]
+[ext_resource type="Texture2D" uid="uid://jm81vi2kk4n8" path="res://sprites/background.png" id="2_wpp1m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_10c2w"]
+size = Vector2(6, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qrlg2"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(144, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wpp1m"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(0, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_of7k7"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(16, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rjebl"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(32, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4kkd1"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(48, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3j1ff"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(64, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u2dwx"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(80, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w8qs7"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(96, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nptta"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(112, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qy841"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(128, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m0h1a"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(144, 112, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cmysf"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(0, 80, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cw8ny"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(144, 96, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t4t6h"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(0, 96, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gjjrx"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(16, 96, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k4d4s"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(32, 96, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fstgd"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(48, 96, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ebed4"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(64, 96, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8cd0d"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(80, 96, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n56vw"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(96, 96, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a2wkm"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(112, 96, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bvhkd"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(128, 96, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1jn1m"]
+atlas = ExtResource("2_wpp1m")
+region = Rect2(0, 64, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qy841"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qrlg2")
+}],
+"loop": true,
+"name": &"door_closed",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wpp1m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_of7k7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rjebl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4kkd1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3j1ff")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u2dwx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w8qs7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nptta")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qy841")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m0h1a")
+}],
+"loop": true,
+"name": &"door_closing",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cmysf")
+}],
+"loop": true,
+"name": &"door_needs_diamond",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cw8ny")
+}],
+"loop": true,
+"name": &"door_needs_player",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t4t6h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gjjrx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k4d4s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fstgd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ebed4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8cd0d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n56vw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a2wkm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bvhkd")
+}],
+"loop": true,
+"name": &"door_opening",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1jn1m")
+}],
+"loop": true,
+"name": &"player_needs_diamond",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wpp1m"]
+size = Vector2(2, 16)
+
+[node name="DoorDetectBox1" type="Area2D" unique_id=168820811]
+script = ExtResource("1_1ygrd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1714158734]
+position = Vector2(-1, 0)
+shape = SubResource("RectangleShape2D_10c2w")
+
+[node name="DoorSprite" type="AnimatedSprite2D" parent="." unique_id=1913496604]
+position = Vector2(-6, 0)
+sprite_frames = SubResource("SpriteFrames_qy841")
+animation = &"door_closing"
+frame_progress = 0.05085971
+
+[node name="DoorCollider" type="StaticBody2D" parent="." unique_id=1374698067]
+
+[node name="DoorCollision" type="CollisionShape2D" parent="DoorCollider" unique_id=163597921]
+position = Vector2(1, 0)
+shape = SubResource("RectangleShape2D_wpp1m")
+debug_color = Color(0.99270016, 0, 0.25481355, 0.41960785)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
