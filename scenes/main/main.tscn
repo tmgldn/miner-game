@@ -26,6 +26,11 @@ font_size = 120
 font = ExtResource("8_5vw27")
 font_size = 48
 
+[sub_resource type="LabelSettings" id="LabelSettings_l3cfh"]
+line_spacing = -36.0
+font = ExtResource("8_5vw27")
+font_size = 60
+
 [node name="Main" type="Node2D" unique_id=326270260]
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=498850910]
@@ -149,6 +154,59 @@ vertical_alignment = 1
 [node name="StartText" type="Label" parent="Meta/StartScreen/Background/VBoxContainer" unique_id=826267742]
 layout_mode = 2
 text = "press [Space] to start game"
+label_settings = SubResource("LabelSettings_4c57u")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DeathScreen" type="Control" parent="Meta" unique_id=222713424]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="Meta/DeathScreen" unique_id=1575786663]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.9509471, 0.3651167, 3.85046e-07, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Meta/DeathScreen/Background" unique_id=1388554712]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 11.0
+offset_top = 8.0
+offset_right = 11.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="TitleText" type="Label" parent="Meta/DeathScreen/Background/VBoxContainer" unique_id=548308821]
+layout_mode = 2
+text = "you died"
+label_settings = SubResource("LabelSettings_b1x3f")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MoralSupportText" type="Label" parent="Meta/DeathScreen/Background/VBoxContainer" unique_id=109964447]
+layout_mode = 2
+text = "it happens to us all eventually"
+label_settings = SubResource("LabelSettings_l3cfh")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartText" type="Label" parent="Meta/DeathScreen/Background/VBoxContainer" unique_id=1008513425]
+layout_mode = 2
+text = "press [Space] to respawn"
 label_settings = SubResource("LabelSettings_4c57u")
 horizontal_alignment = 1
 vertical_alignment = 1

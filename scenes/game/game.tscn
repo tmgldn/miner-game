@@ -1,5 +1,6 @@
 [gd_scene format=4 uid="uid://bokrdrg1ihlbh"]
 
+[ext_resource type="Script" uid="uid://6b0xh3thy6j7" path="res://scenes/game/game_root.gd" id="1_3jaai"]
 [ext_resource type="Script" uid="uid://p64nwfu0cjsp" path="res://scenes/game/game.gd" id="1_eow3j"]
 [ext_resource type="Script" uid="uid://dpn1bteof8nrh" path="res://scripts/subpixel_camera.gd" id="1_fc0e3"]
 [ext_resource type="Script" uid="uid://boij2gudmfh1f" path="res://scripts/generate.gd" id="2_j5wjh"]
@@ -1197,6 +1198,7 @@ size = Vector2(96, 33)
 
 [node name="GameRoot" type="Node2D" unique_id=1298478925]
 texture_filter = 1
+script = ExtResource("1_3jaai")
 
 [node name="Game" type="Node" parent="." unique_id=1404530793]
 unique_name_in_owner = true
@@ -1307,7 +1309,7 @@ script = ExtResource("1_fc0e3")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=684315548]
 unique_name_in_owner = true
-position = Vector2(26, 24)
+position = Vector2(344, 1)
 script = ExtResource("4_eow3j")
 
 [node name="PickaxeSprite" type="AnimatedSprite2D" parent="Player" unique_id=1372966549]
@@ -1385,8 +1387,8 @@ label_settings = SubResource("LabelSettings_otnwt")
 [node name="HelpTextBoxes" type="Node2D" parent="." unique_id=10611761]
 
 [node name="PlayerDetectBox" parent="HelpTextBoxes" unique_id=115156341 instance=ExtResource("20_pg2xm")]
-position = Vector2(48, 24)
-message = "[left] [right] to move, [up] to jump"
+position = Vector2(40, 16)
+message = "[Left] [Right] to move            [Up] to jump"
 
 [node name="PlayerDetectBox2" parent="HelpTextBoxes" unique_id=1031871640 instance=ExtResource("20_pg2xm")]
 position = Vector2(95, -53)

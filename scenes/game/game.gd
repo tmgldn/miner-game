@@ -10,9 +10,7 @@ extends Node
 @onready var GroundParticleEffects := %GroundParticleEffects
 @onready var Player := %Player
 @onready var FluidLayer := %FluidLayer
-
-func Meta():
-	return get_node("/root/Main/Meta")
+@onready var Meta = get_node("/root/Main/Meta")
 
 func _ready() -> void:
 	Generate.initialise_grid(round(Time.get_unix_time_from_system()))
@@ -66,7 +64,7 @@ func start_eruption(
 	FluidLayer.set_cool_lava(lava_start_coords)
 	Camera.has_started_earthquake = false
 	Camera.shake_state = 1
-	
+	Meta.eruption(door_id)
 
 func add_ore(ore: String, coords: Vector2i) -> void:
 	ore = 'Ruby' if ore == 'RubyE' else ore

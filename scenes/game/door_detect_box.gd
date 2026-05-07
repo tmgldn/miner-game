@@ -14,6 +14,7 @@ enum DoorState {
 @onready var Player: Player = %Player
 @onready var DoorSprite: AnimatedSprite2D = $DoorSprite
 @onready var DoorCollision: CollisionShape2D = $DoorCollider/DoorCollision
+@onready var Meta = get_node("/root/Main/Meta")
 
 var time_until_animation_complete := 0.0
 
@@ -45,7 +46,7 @@ func _physics_process(delta: float) -> void:
 			Player.fix_position = global_position + Vector2(-3, 0)
 		DoorState.DoorClosed:
 			DoorSprite.play('door_closed')
-			Player.respawn_position = global_position + Vector2(6, 0)
+			Meta.respawn_position = global_position + Vector2(6, 0)
 			Player.fix_position = null
 			#print('Remove lava from previous levels')
 
@@ -54,6 +55,7 @@ func _on_body_entered(body: Node2D) -> void:
 		if door_state == DoorState.DoorNeedsDiamond:
 			door_state = DoorState.DoorOpening
 			time_until_animation_complete = 1.0
+			Meta.escaped_eruption()
 		elif door_state == DoorState.DoorNeedsPlayer:
 			door_state = DoorState.DoorClosing
 			time_until_animation_complete = 1.0

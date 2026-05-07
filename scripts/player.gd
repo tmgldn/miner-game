@@ -89,24 +89,15 @@ const MINING_DIRECTIONS = [
 @onready var Messages := %Messages
 @onready var Meta = get_node("/root/Main/Meta")
 
-func respawn() -> void:
-	position = respawn_position
-	health = 3
-	oxygen = 8
-	Messages.set_help_message(
-		"...welcome back"
-	)
-
 func damage(dmg: int) -> void:
 	if secs_since_damage >= DAMAGE_IMMUNITY_TIME:
 		health = max(0, health - dmg)
 		secs_since_damage = 0
 		secs_since_health_change = 0
 		if health <= 0:
-			respawn()
+			Meta.respawn()
 
 var fix_position = null
-var respawn_position := Vector2(21, 24)
 
 func _physics_process(delta: float) -> void:
 	if health <= 0:
