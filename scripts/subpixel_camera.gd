@@ -14,26 +14,24 @@ var time_since_last_state: float = 0.0
 @onready var Meta = get_node("/root/Main/Meta")
 
 var prev_cam_offset = Vector2(0, 0)
-var has_erupted: bool = false
+var has_started_earthquake: bool = true
 
 func _process(delta: float) -> void:
-	if not has_erupted:
-		has_erupted = not is_inf(Meta.game_state.erupted_time_timestamp)
-		if has_erupted:
-			lerp_rate = 0.0
+	if not has_started_earthquake:
+		lerp_rate = 0.0
+		has_started_earthquake = true
 	if lerp_rate < 3:
 		lerp_rate += (delta + lerp_rate) * 0.02
 	elif lerp_rate > 3:
 		lerp_rate = 3
 	var player_pos: Vector2 = %Player.global_position
 	var desired_pos: Vector2 = Vector2(
+		# allows for the segmentation into vertical levels
 		88.5 + ((int(player_pos[0])-11) / 160) * 160,
 		clamp(
-			player_pos[1] + (
-				-16.0 if has_erupted else 8.0
-			),
-			-9999.0, # 88.0,
-			9999.0, # 1832.0
+			player_pos[1],
+			-9999.0,
+			9999.0,
 		)
 	)
 

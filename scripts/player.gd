@@ -13,7 +13,7 @@ class_name Player
 @export var WATER_ACCELERATION := 15.0
 @export var WATER_FRICTION := 30.0
 
-@export var OXYGEN_DRAIN_TIME := 0.75
+@export var OXYGEN_DRAIN_TIME := 1.0
 @export var WATER_BUFFER := 0.1
 @export var GAS_BUFFER := 0.1
 @export var FIRE_BUFFER := 0.01
@@ -88,13 +88,16 @@ const MINING_DIRECTIONS = [
 @onready var OxygenIndicator = %OxygenIndicator
 @onready var Meta = get_node("/root/Main/Meta")
 
+func respawn() -> void:
+	print('respawn')
+
 func damage(dmg: int) -> void:
 	if secs_since_damage >= DAMAGE_IMMUNITY_TIME:
 		health = max(0, health - dmg)
 		secs_since_damage = 0
 		secs_since_health_change = 0
 		if health <= 0:
-			Meta.die()
+			respawn()
 
 var fix_position = null
 var has_escaped := false

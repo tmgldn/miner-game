@@ -61,10 +61,11 @@ func start_eruption(
 	door_id: int,
 	lava_start_coords: Vector2i
 ):
-	print('erupt test ', door_id, ' ', lava_start_coords)
-	var door_coords: Vector2i = get_sorted_doors()[door_id]
 	var DoorDetectBox: DiamondDoor = %DoorHitboxes.get_node('DiamondDoor' + str(door_id))
 	DoorDetectBox.door_state = DoorDetectBox.DoorState.DoorNeedsDiamond
+	FluidLayer.set_cool_lava(lava_start_coords)
+	Camera.has_started_earthquake = false
+	Camera.shake_state = 1
 	
 
 func add_ore(ore: String, coords: Vector2i) -> void:
@@ -75,15 +76,15 @@ func add_ore(ore: String, coords: Vector2i) -> void:
 		
 		if ore == 'Diamond':
 			if coords[0] < 10:
-				start_eruption(0, Vector2i(0, 0))
+				start_eruption(0, Vector2i(2, 47))
 			elif coords[0] < 30:
-				start_eruption(1, Vector2i(0, 0))
+				start_eruption(1, Vector2i(42, 63))
 			elif coords[0] < 50:
-				start_eruption(2, Vector2i(0, 0))
+				start_eruption(2, Vector2i(82, 81))
 			elif coords[0] < 70:
-				start_eruption(3, Vector2i(0, 0))
+				start_eruption(3, Vector2i(122, 95))
 			elif coords[0] < 90:
-				start_eruption(4, Vector2i(0, 0))
+				start_eruption(4, Vector2i(162, -25))
 			else:
 				print('you win! back to start screen')
 
@@ -91,15 +92,19 @@ var PENDING_EXPLOSIONS: Dictionary = {}
 
 func on_player_destroy_ground_at_coords(coords: Vector2i) -> void:
 	var tile_data = tile_coords_to_data(coords)
-	GroundLayer.set_cell(coords, -1)
-	GroundOverlayLayer.set_cell(coords, -1)
 	add_ore(tile_data.oi.name, coords)
 	Messages.show_add_ore_message(tile_data.oi.name)
+	on_destroy_ground_at_coords(coords)
+
+func on_destroy_ground_at_coords(coords: Vector2i) -> void:
+	GroundLayer.set_cell(coords, -1)
+	GroundOverlayLayer.set_cell(coords, -1)
 	on_grid_change()
 
-func explode(coords: Vector2i) -> void:
+func explode(coords: Vector2i, was_player := false) -> void:
 	PENDING_EXPLOSIONS.set(coords, null)
 	on_player_destroy_ground_at_coords(coords)
+	Camera.shake_state = 6
 	# all 4 subtiles become fire
 	var top_left = coords * 2
 	for di in range(-1, 3):
@@ -108,7 +113,7 @@ func explode(coords: Vector2i) -> void:
 			if FluidLayer.can_burn(sub_coords):
 				FluidLayer.set_fire(sub_coords)
 			elif FluidLayer.can_explode(sub_coords):
-				explode(Vector2i(sub_coords[0] >> 1, sub_coords[1] >> 1))
+				explode(Vector2i(sub_coords[0] >> 1, sub_coords[1] >> 1), was_player)
 
 func attempt_mine(coords: Vector2i) -> void:
 	var tile_data = tile_coords_to_data(coords)
@@ -121,7 +126,7 @@ func attempt_mine(coords: Vector2i) -> void:
 	
 	if tile_data.oi.name == 'RubyE' and next == 'Empty':
 		# activate explosion
-		explode(coords)
+		explode(coords, true)
 	else:
 		if tile_data.oi.name == 'Ruby' and (next == 'Empty' or next_next == 'Empty'):
 			GroundOverlayLayer.set_cell(coords, 0, TileInfo.OVERLAYS['RubyE'].c[0])
@@ -238,7 +243,7 @@ func wait_and_explode(ref: Dictionary):
 		await get_tree().create_timer(RUBY_EXPLOSION_SECONDS).timeout
 		var ref2 = PENDING_EXPLOSIONS.get(ref.coords)
 		if ref == ref2:
-			explode(ref.coords)
+			explode(ref.coords, true)
 
 func on_grid_change():
 	for g_str in ['Soil2', 'Rock4']:
