@@ -7,3 +7,5 @@ the game easier.
 > obstruct play-testing the game.
 
 Consequently, playing the .exe (plus the .pck) from this repo will be far more convenient.
+
+I can only apologise for the bugs - was a rush to get it done in time meaning some things never got a thorough QA </3
