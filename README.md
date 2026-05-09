@@ -1,6 +1,6 @@
 # (!) IMPORTANT (!)
 
-This repo contains some bug fixes not present in the version originally fitted to make assessing
+This repo contains some bug fixes not present in the version originally submitted to make assessing
 the game easier.
 
 > Note: No changes to content or balance were added, just fixes for bugs that would otherwise
