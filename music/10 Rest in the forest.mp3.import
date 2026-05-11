@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://d1qevweasx7gs"
+path="res://.godot/imported/10 Rest in the forest.mp3-be578d2ccdade7c7b89a46128d77ddd6.mp3str"
+
+[deps]
+
+source_file="res://music/10 Rest in the forest.mp3"
+dest_files=["res://.godot/imported/10 Rest in the forest.mp3-be578d2ccdade7c7b89a46128d77ddd6.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

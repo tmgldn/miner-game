@@ -1309,7 +1309,7 @@ script = ExtResource("1_fc0e3")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=684315548]
 unique_name_in_owner = true
-position = Vector2(344, 1)
+position = Vector2(1268, -350)
 script = ExtResource("4_eow3j")
 
 [node name="PickaxeSprite" type="AnimatedSprite2D" parent="Player" unique_id=1372966549]

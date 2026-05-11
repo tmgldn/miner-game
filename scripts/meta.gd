@@ -48,8 +48,6 @@ func _process(delta: float) -> void:
 		for child in %SubViewport.get_children():
 			%SubViewport.remove_child(child)
 		var game_root: GameRoot = game_scene.instantiate()
-		if respawn_position:
-			game_root.move_player(respawn_position)
 		%SubViewport.add_child(game_root)
 		meta_state = MetaState.InGame
 	
@@ -63,6 +61,9 @@ func eruption(level: int):
 
 func escaped_eruption():
 	active_stream = "res://music/04 Walk in the forest.mp3"
+
+func victory():
+	active_stream = "res://music/16 The only reason we end here.mp3"
 
 func respawn():
 	meta_state = MetaState.DeathScreen
