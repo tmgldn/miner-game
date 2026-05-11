@@ -1309,7 +1309,7 @@ script = ExtResource("1_fc0e3")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=684315548]
 unique_name_in_owner = true
-position = Vector2(1268, -350)
+position = Vector2(1266, -357)
 script = ExtResource("4_eow3j")
 
 [node name="PickaxeSprite" type="AnimatedSprite2D" parent="Player" unique_id=1372966549]
@@ -1442,6 +1442,10 @@ message = "bears can jump but cannot swim up"
 [node name="PlayerDetectBox13" parent="HelpTextBoxes" unique_id=1599939167 instance=ExtResource("20_pg2xm")]
 position = Vector2(240, 21)
 message = "these vents on the wall lead fluids away from the chamber"
+
+[node name="PlayerDetectBox14" parent="HelpTextBoxes" unique_id=2020031901 instance=ExtResource("20_pg2xm")]
+position = Vector2(146, -126)
+message = "press [X]"
 
 [node name="PlayerDetectBoxVending" parent="HelpTextBoxes" unique_id=1263078631 instance=ExtResource("20_pg2xm")]
 position = Vector2(200, 22)
